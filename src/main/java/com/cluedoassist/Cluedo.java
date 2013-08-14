@@ -35,6 +35,7 @@ public class Cluedo {
     private void rectifyTable() throws UnknownPlayerException {
         for (LogEntry logEntry : log) {
             markRepliersHave(logEntry);
+            markReplierHasNoCards(logEntry);
         }
     }
 
@@ -50,6 +51,21 @@ public class Cluedo {
                 continue;
             }
             table[cardNumber][playerNumber] = Resolution.Plus;
+        }
+    }
+
+    private void markReplierHasNoCards(LogEntry le) throws UnknownPlayerException {
+        for (Reply r : le.replies) {
+            int playerNumber = r.replier.ord(players);
+            if (playerNumber < 0) {
+                throw new UnknownPlayerException("Unknown replier : " + r.replier.name);
+            }
+            if (r.cardReply == CardReply.NoCard()) {
+                for (Card c : le.askedCards) {
+                    int cardNumber = c.cardNumber();
+                    table[cardNumber][playerNumber] = Resolution.Minus;
+                }
+            }
         }
     }
 
