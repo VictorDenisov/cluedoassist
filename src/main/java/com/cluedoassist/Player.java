@@ -1,5 +1,7 @@
 package com.cluedoassist;
 
+import java.util.List;
+
 public final class Player {
 
     final String name;
@@ -12,12 +14,13 @@ public final class Player {
         return new Player(name);
     }
 
-    public int ord(Player[] ps) {
-        for (int i = 0; i < ps.length; ++i) {
-            if (ps[i] == this) {
+    public int ord(List<Player> ps) throws UnknownPlayerException {
+        int n = ps.size();
+        for (int i = 0; i < n; ++i) {
+            if (ps.get(i) == this) {
                 return i;
             }
         }
-        return -1;
+        throw new UnknownPlayerException("Player " + name + " is missing from the list");
     }
 }

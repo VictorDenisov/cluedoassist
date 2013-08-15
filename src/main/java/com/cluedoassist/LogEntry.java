@@ -1,20 +1,21 @@
 package com.cluedoassist;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public final class LogEntry {
 
     final Player asker;
 
-    final Card[] askedCards;
+    final List<Card> askedCards;
 
-    final Reply[] replies;
+    final List<Reply> replies;
 
-    public LogEntry(Player asker, Card[] askedCards, Reply[] replies) {
+    public LogEntry(Player asker, List<Card> askedCards, List<Reply> replies) {
         this.asker = asker;
 
-        this.askedCards = new Card[askedCards.length];
-        System.arraycopy(askedCards, 0, this.askedCards, 0, askedCards.length);
+        this.askedCards = new ArrayList<Card>(askedCards);
 
-        this.replies = new Reply[replies.length];
-        System.arraycopy(replies, 0, this.replies, 0, replies.length);
+        this.replies = new ArrayList<Reply>(replies);
     }
 }

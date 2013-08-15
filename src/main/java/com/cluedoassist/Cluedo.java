@@ -1,9 +1,10 @@
 package com.cluedoassist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Cluedo {
-    private Player[] players;
+    private ArrayList<Player> players;
 
     private static int ENV_COL = 0;
     private static int OUT_COL = 1;
@@ -16,18 +17,17 @@ public class Cluedo {
 
     ArrayList<LogEntry> log;
 
-    public Cluedo(Player[] players) {
-        this.players = new Player[players.length];
-        System.arraycopy(players, 0, this.players, 0, players.length);
+    public Cluedo(List<Player> players) {
+        this.players = new ArrayList<Player>(players);
         this.currentPlayer = 0;
         table = new Resolution[cardCount][];
         for (int i = 0; i < cardCount; ++i) {
-            table[i] = new Resolution[players.length + 2];
+            table[i] = new Resolution[players.size() + 2];
         }
         log = new ArrayList<LogEntry>();
     }
 
-    public void makeTurn(Player asker, Card[] askedCards, Reply[] replies) throws UnknownPlayerException {
+    public void makeTurn(Player asker, List<Card> askedCards, List<Reply> replies) throws UnknownPlayerException {
         log.add(new LogEntry(asker, askedCards, replies));
         rectifyTable();
     }
@@ -36,15 +36,13 @@ public class Cluedo {
         for (LogEntry logEntry : log) {
             markRepliersHave(logEntry);
             markReplierHasNoCards(logEntry);
+            markOnlyOneUnknown(logEntry);
         }
     }
 
     private void markRepliersHave(LogEntry le) throws UnknownPlayerException {
         for (Reply r : le.replies) {
             int playerNumber = r.replier.ord(players);
-            if (playerNumber < 0) {
-                throw new UnknownPlayerException("Unknown replier : " + r.replier.name);
-            }
 
             int cardNumber = r.cardReply.cardNumber();
             if (cardNumber < 0) {
@@ -57,9 +55,7 @@ public class Cluedo {
     private void markReplierHasNoCards(LogEntry le) throws UnknownPlayerException {
         for (Reply r : le.replies) {
             int playerNumber = r.replier.ord(players);
-            if (playerNumber < 0) {
-                throw new UnknownPlayerException("Unknown replier : " + r.replier.name);
-            }
+
             if (r.cardReply == CardReply.NoCard()) {
                 for (Card c : le.askedCards) {
                     int cardNumber = c.cardNumber();
@@ -67,6 +63,42 @@ public class Cluedo {
                 }
             }
         }
+    }
+
+    private void markOnlyOneUnknown(LogEntry le) throws UnknownPlayerException {
+        for (Reply r : le.replies) {
+            int playerNumber = r.replier.ord(players);
+
+            if (r.cardReply != CardReply.NoCard()) {
+                List<Card> s = allPlusCards(playerNumber);
+                s.addAll(allUnknownCards(playerNumber));
+                s.retainAll(le.askedCards);
+                if (s.size() == 1) {
+                    int cardNumber = s.get(0).cardNumber();
+                    table[cardNumber][playerNumber] = Resolution.Plus;
+                }
+            }
+        }
+    }
+
+    private List<Card> allPlusCards(int playerNumber) {
+        ArrayList<Card> result = new ArrayList<Card>();
+        for (int i = 0; i < cardCount; ++i) {
+            if (table[i][playerNumber] == Resolution.Plus) {
+                result.add(Card.values()[i]);
+            }
+        }
+        return result;
+    }
+
+    private List<Card> allUnknownCards(int playerNumber) {
+        ArrayList<Card> result = new ArrayList<Card>();
+        for (int i = 0; i < cardCount; ++i) {
+            if (table[i][playerNumber] == Resolution.Unknown) {
+                result.add(Card.values()[i]);
+            }
+        }
+        return result;
     }
 
 }
