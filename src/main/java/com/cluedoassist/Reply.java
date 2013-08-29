@@ -12,4 +12,9 @@ public final class Reply implements Serializable {
         this.replier = replier;
         this.cardReply = cardReply;
     }
+
+    @Override
+    public String toString() {
+        return "Reply : " + replier + " " + cardReply;
+    }
 }

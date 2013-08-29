@@ -30,11 +30,21 @@ public abstract class CardReply implements Serializable {
         public int cardNumber() {
             return -1;
         }
+
+        @Override
+        public String toString() {
+            return "NoCard";
+        }
     }
 
     static class UnknownCard extends CardReply {
         public int cardNumber() {
             return -1;
+        }
+
+        @Override
+        public String toString() {
+            return "UnknownCard";
         }
     }
 
@@ -54,5 +64,11 @@ public abstract class CardReply implements Serializable {
             }
             throw new RuntimeException("Unknown card : " + card);
         }
+
+        @Override
+        public String toString() {
+            return card + "";
+        }
     }
+
 }

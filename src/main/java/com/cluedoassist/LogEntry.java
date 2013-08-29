@@ -20,4 +20,9 @@ public final class LogEntry implements Serializable {
 
         this.replies = new ArrayList<Reply>(replies);
     }
+
+    @Override
+    public String toString() {
+        return asker + " " + askedCards + " " + replies;
+    }
 }
