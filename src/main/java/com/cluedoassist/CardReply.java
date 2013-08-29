@@ -1,6 +1,8 @@
 package com.cluedoassist;
 
-public abstract class CardReply {
+import java.io.Serializable;
+
+public abstract class CardReply implements Serializable {
 
     public static CardReply NoCard() {
         return noCard;

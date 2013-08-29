@@ -1,12 +1,14 @@
 package com.cluedoassist;
 
-public final class Reply {
+import java.io.Serializable;
 
-    final Player replier;
+public final class Reply implements Serializable {
+
+    final String replier;
 
     final CardReply cardReply;
 
-    public Reply(Player replier, CardReply cardReply) {
+    public Reply(String replier, CardReply cardReply) {
         this.replier = replier;
         this.cardReply = cardReply;
     }

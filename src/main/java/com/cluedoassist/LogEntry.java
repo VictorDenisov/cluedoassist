@@ -3,15 +3,17 @@ package com.cluedoassist;
 import java.util.List;
 import java.util.ArrayList;
 
-public final class LogEntry {
+import java.io.Serializable;
 
-    final Player asker;
+public final class LogEntry implements Serializable {
+
+    final String asker;
 
     final List<Card> askedCards;
 
     final List<Reply> replies;
 
-    public LogEntry(Player asker, List<Card> askedCards, List<Reply> replies) {
+    public LogEntry(String asker, List<Card> askedCards, List<Reply> replies) {
         this.asker = asker;
 
         this.askedCards = new ArrayList<Card>(askedCards);
