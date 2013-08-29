@@ -3,6 +3,7 @@ package com.cluedoassist;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
+import java.util.Collections;
 
 public class Cluedo implements Serializable {
     private ArrayList<String> players;
@@ -25,6 +26,10 @@ public class Cluedo implements Serializable {
     public int cardCount = Card.values().length;
 
     ArrayList<LogEntry> log;
+
+    public List<LogEntry> getLog() {
+        return Collections.unmodifiableList(log);
+    }
 
     public List<String> getCompartments() {
         ArrayList<String> result = new ArrayList<String>();

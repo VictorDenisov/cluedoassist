@@ -39,7 +39,7 @@ public class CluedoTest extends TestCase {
         askedCards.add(Card.Scarlett);
         ArrayList<Reply> replies = new ArrayList<Reply>();
         replies.add(new Reply("p1", CardReply.NoCard()));
-        c.makeTurn("me", askedCards, replies);
+        c.makeTurn(Cluedo.ME, askedCards, replies);
         String[][] table = c.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
     }
@@ -52,7 +52,7 @@ public class CluedoTest extends TestCase {
         askedCards.add(Card.Scarlett);
         ArrayList<Reply> replies = new ArrayList<Reply>();
         replies.add(new Reply("p1", CardReply.NoCard()));
-        c.makeTurn(new LogEntry("me", askedCards, replies));
+        c.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
         String[][] table = c.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
     }
@@ -67,7 +67,7 @@ public class CluedoTest extends TestCase {
         askedCards.add(Card.Candle);
         ArrayList<Reply> replies = new ArrayList<Reply>();
         replies.add(new Reply("p1", CardReply.NoCard()));
-        c.makeTurn(new LogEntry("me", askedCards, replies));
+        c.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
         String[][] table = c.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Plum.cardNumber() + 1][4]);
