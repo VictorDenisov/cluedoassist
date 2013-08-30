@@ -69,13 +69,6 @@ public class CluedoTest extends TestCase {
         replies.add(new Reply("P1", CardReply.NoCard()));
         c.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
         String[][] table = c.getTable();
-        for (int i = 0; i < table.length; ++i) {
-            for (int j = 0; j < table[i].length; ++j) {
-                System.out.print(table[i][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println(c.getLog());
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Plum.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Candle.cardNumber() + 1][4]);

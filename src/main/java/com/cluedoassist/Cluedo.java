@@ -160,6 +160,7 @@ public class Cluedo implements Serializable {
         }
     }
 
+    /* Processes the situation when replier shows known card. */
     private void solveRepliersHave(LogEntry le) throws UnknownPlayerException {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
@@ -172,6 +173,7 @@ public class Cluedo implements Serializable {
         }
     }
 
+    /* Processes the situation when replier shows no cards. */
     private void solveReplierHasNoCards(LogEntry le) throws UnknownPlayerException {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
