@@ -178,12 +178,9 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            System.out.println("Player number " + playerNumber);
             if (r.cardReply.cardNumber() == -2) {
-                System.out.println("Inside NoCard");
                 for (Card c : le.askedCards) {
                     int cardNumber = c.cardNumber();
-                    System.out.println("Processing card number " + cardNumber);
                     table[cardNumber][playerNumber] = Resolution.Minus;
                 }
             }

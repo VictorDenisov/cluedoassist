@@ -1,76 +1,64 @@
 package com.cluedoassist;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.testng.annotations.*;
+
+import static org.testng.AssertJUnit.*;
 
 import java.util.ArrayList;
 
-/**
- * Unit test for simple App.
- */
-public class CluedoTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public CluedoTest( String testName )
-    {
-        super( testName );
+public class CluedoTest {
+
+    private ArrayList<String> players;
+
+    private String P1 = "P1";
+
+    private Cluedo cluedo;
+
+    @BeforeTest
+    public void setUp() {
+        ArrayList<String> players = new ArrayList<String>();
+        players.add(P1);
+        cluedo = new Cluedo(players);
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( CluedoTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
+    @Test
     public void testTurn() throws UnknownPlayerException {
-        ArrayList<String> players = new ArrayList<String>();
-        players.add("p1");
-        Cluedo c = new Cluedo(players);
         ArrayList<Card> askedCards = new ArrayList<Card>();
         askedCards.add(Card.Scarlett);
         ArrayList<Reply> replies = new ArrayList<Reply>();
-        replies.add(new Reply("p1", CardReply.NoCard()));
-        c.makeTurn(Cluedo.ME, askedCards, replies);
-        String[][] table = c.getTable();
+        replies.add(new Reply(P1, CardReply.NoCard()));
+        cluedo.makeTurn(Cluedo.ME, askedCards, replies);
+        String[][] table = cluedo.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
     }
 
+    @Test
     public void testTurnLogEntry() throws UnknownPlayerException {
-        ArrayList<String> players = new ArrayList<String>();
-        players.add("p1");
-        Cluedo c = new Cluedo(players);
         ArrayList<Card> askedCards = new ArrayList<Card>();
         askedCards.add(Card.Scarlett);
         ArrayList<Reply> replies = new ArrayList<Reply>();
-        replies.add(new Reply("p1", CardReply.NoCard()));
-        c.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
-        String[][] table = c.getTable();
+        replies.add(new Reply(P1, CardReply.NoCard()));
+        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        String[][] table = cluedo.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
     }
 
+    @Test
     public void testTurnLogEntryBig() throws UnknownPlayerException {
-        ArrayList<String> players = new ArrayList<String>();
-        players.add("P1");
-        Cluedo c = new Cluedo(players);
         ArrayList<Card> askedCards = new ArrayList<Card>();
         askedCards.add(Card.Scarlett);
         askedCards.add(Card.Plum);
         askedCards.add(Card.Candle);
         ArrayList<Reply> replies = new ArrayList<Reply>();
-        replies.add(new Reply("P1", CardReply.NoCard()));
-        c.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
-        String[][] table = c.getTable();
+        replies.add(new Reply(P1, CardReply.NoCard()));
+        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        String[][] table = cluedo.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Plum.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Candle.cardNumber() + 1][4]);
+    }
+
+    @Test
+    public void testTurnOneUnknown() throws UnknownPlayerException {
     }
 }
