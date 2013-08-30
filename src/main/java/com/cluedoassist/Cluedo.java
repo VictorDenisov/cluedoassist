@@ -155,6 +155,9 @@ public class Cluedo implements Serializable {
         for (int i = 0; i < table[0].length; ++i) {
             tableModified = tableModified || solvePlayerHasAllCards(i);
         }
+        for (int i = 0; i < table.length; ++i) {
+            tableModified = tableModified || solveLineOneNonNegative(i);
+        }
         return tableModified;
     }
 
@@ -241,6 +244,24 @@ public class Cluedo implements Serializable {
             }
         }
         return count;
+    }
+
+    private boolean solveLineOneNonNegative(int cardNumber) {
+        int nonNegativeCount = 0;
+        for (int i = 0; i < table[cardNumber].length; ++i) {
+            if (table[cardNumber][i] != Resolution.Minus) {
+                ++nonNegativeCount;
+            }
+        }
+        boolean tableModified = false;
+        if (nonNegativeCount == 1) {
+            for (int i = 0; i < table[cardNumber].length; ++i) {
+                if (table[cardNumber][i] == Resolution.Unknown) {
+                    tableModified = tableModified || setPlus(cardNumber, i);
+                }
+            }
+        }
+        return tableModified;
     }
 
     private boolean solvePlayerHasAllCards(int playerNumber) {
