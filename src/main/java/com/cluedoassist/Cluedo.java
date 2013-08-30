@@ -103,9 +103,13 @@ public class Cluedo implements Serializable {
         table[cardNumber][playerNumber] = Resolution.Plus;
         for (int i = 0; i < table[cardNumber].length; ++i) {
             if (i != playerNumber) {
-                table[cardNumber][i] = Resolution.Minus;
+                setMinus(cardNumber, i);
             }
         }
+    }
+
+    private void setMinus(int cardNumber, int playerNumber) {
+        table[cardNumber][playerNumber] = Resolution.Minus;
     }
 
     public void setCard(String asker, Card card) throws UnknownPlayerException {
@@ -181,7 +185,7 @@ public class Cluedo implements Serializable {
             if (r.cardReply.cardNumber() == -2) {
                 for (Card c : le.askedCards) {
                     int cardNumber = c.cardNumber();
-                    table[cardNumber][playerNumber] = Resolution.Minus;
+                    setMinus(cardNumber, playerNumber);
                 }
             }
         }
@@ -191,7 +195,7 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.cardNumber() != -2) {
+            if (r.cardReply.cardNumber() == -1) {
                 List<Card> s = allPlusCards(playerNumber);
                 s.addAll(allUnknownCards(playerNumber));
                 s.retainAll(le.askedCards);
@@ -219,7 +223,7 @@ public class Cluedo implements Serializable {
 
             for (int i = 0; i < cardCount; ++i) {
                 if (table[i][playerNumber] == Resolution.Unknown) {
-                    table[i][playerNumber] = Resolution.Minus;
+                    setMinus(i, playerNumber);
                 }
             }
         }
