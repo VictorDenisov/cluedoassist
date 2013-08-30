@@ -99,17 +99,27 @@ public class Cluedo implements Serializable {
         return result;
     }
 
-    private void setPlus(int cardNumber, int playerNumber) {
+    private boolean setPlus(int cardNumber, int playerNumber) {
+        boolean tableModified = false;
+        if (table[cardNumber][playerNumber] == Resolution.Unknown) {
+            tableModified = true;
+        }
         table[cardNumber][playerNumber] = Resolution.Plus;
         for (int i = 0; i < table[cardNumber].length; ++i) {
             if (i != playerNumber) {
                 setMinus(cardNumber, i);
             }
         }
+        return tableModified;
     }
 
-    private void setMinus(int cardNumber, int playerNumber) {
+    private boolean setMinus(int cardNumber, int playerNumber) {
+        boolean tableModified = false;
+        if (table[cardNumber][playerNumber] == Resolution.Unknown) {
+            tableModified = true;
+        }
         table[cardNumber][playerNumber] = Resolution.Minus;
+        return tableModified;
     }
 
     public void setCard(String asker, Card card) throws UnknownPlayerException {
@@ -130,23 +140,33 @@ public class Cluedo implements Serializable {
         inferenceCycle();
     }
 
-    private void processLog() throws UnknownPlayerException {
+    private boolean processLog() throws UnknownPlayerException {
+        boolean tableModified = false;
         for (LogEntry logEntry : log) {
-            solveRepliersHave(logEntry);
-            solveReplierHasNoCards(logEntry);
-            solveOnlyOneUnknown(logEntry);
+            tableModified = tableModified || solveRepliersHave(logEntry);
+            tableModified = tableModified || solveReplierHasNoCards(logEntry);
+            tableModified = tableModified || solveOnlyOneUnknown(logEntry);
         }
+        return tableModified;
     }
 
-    private void rectifyTable() {
+    private boolean rectifyTable() {
+        boolean tableModified = false;
         for (int i = 0; i < table[0].length; ++i) {
-            solvePlayerHasAllCards(i);
+            tableModified = tableModified || solvePlayerHasAllCards(i);
         }
+        return tableModified;
     }
 
     private void inferenceCycle() throws UnknownPlayerException {
-        processLog();
-        rectifyTable();
+        for (;;) {
+            boolean tableModified = false;
+            tableModified = tableModified || processLog();
+            tableModified = tableModified || rectifyTable();
+            if (!tableModified) {
+                break;
+            }
+        }
     }
 
     public int playerOrd(String player) throws UnknownPlayerException {
@@ -165,7 +185,8 @@ public class Cluedo implements Serializable {
     }
 
     /* Processes the situation when replier shows known card. */
-    private void solveRepliersHave(LogEntry le) throws UnknownPlayerException {
+    private boolean solveRepliersHave(LogEntry le) throws UnknownPlayerException {
+        boolean tableModified = false;
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
@@ -173,25 +194,29 @@ public class Cluedo implements Serializable {
             if (cardNumber < 0) {
                 continue;
             }
-            setPlus(cardNumber, playerNumber);
+            tableModified = tableModified || setPlus(cardNumber, playerNumber);
         }
+        return tableModified;
     }
 
     /* Processes the situation when replier shows no cards. */
-    private void solveReplierHasNoCards(LogEntry le) throws UnknownPlayerException {
+    private boolean solveReplierHasNoCards(LogEntry le) throws UnknownPlayerException {
+        boolean tableModified = false;
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
             if (r.cardReply.cardNumber() == -2) {
                 for (Card c : le.askedCards) {
                     int cardNumber = c.cardNumber();
-                    setMinus(cardNumber, playerNumber);
+                    tableModified = tableModified || setMinus(cardNumber, playerNumber);
                 }
             }
         }
+        return tableModified;
     }
 
-    private void solveOnlyOneUnknown(LogEntry le) throws UnknownPlayerException {
+    private boolean solveOnlyOneUnknown(LogEntry le) throws UnknownPlayerException {
+        boolean tableModified = false;
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
@@ -201,10 +226,11 @@ public class Cluedo implements Serializable {
                 s.retainAll(le.askedCards);
                 if (s.size() == 1) {
                     int cardNumber = s.get(0).cardNumber();
-                    setPlus(cardNumber, playerNumber);
+                    tableModified = tableModified || setPlus(cardNumber, playerNumber);
                 }
             }
         }
+        return tableModified;
     }
 
     private int plusCountOfPlayer(int playerNumber) {
@@ -217,16 +243,19 @@ public class Cluedo implements Serializable {
         return count;
     }
 
-    private void solvePlayerHasAllCards(int playerNumber) {
+    private boolean solvePlayerHasAllCards(int playerNumber) {
+        boolean tableModified = false;
         if (plusCountOfPlayer(playerNumber)
                     == cardCountPerPlayer[playerNumber]) {
 
             for (int i = 0; i < cardCount; ++i) {
                 if (table[i][playerNumber] == Resolution.Unknown) {
+                    tableModified = true;
                     setMinus(i, playerNumber);
                 }
             }
         }
+        return tableModified;
     }
 
     private List<Card> allPlusCards(int playerNumber) {

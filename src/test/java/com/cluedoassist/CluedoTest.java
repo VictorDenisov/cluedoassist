@@ -82,4 +82,28 @@ public class CluedoTest {
 
         assertEquals("+", table[Card.Knife.cardNumber() + 1][4]);
     }
+
+    @Test
+    public void testTurnOneUnknownInTheBeginning() throws UnknownPlayerException {
+        // Turn 1
+        askedCards.add(Card.Scarlett);
+        askedCards.add(Card.Plum);
+        askedCards.add(Card.Knife); // One card different
+
+        replies.add(new Reply(P1, CardReply.UnknownCard()));
+        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+
+        // Turn 2
+        askedCards = new ArrayList<Card>();
+        replies = new ArrayList<Reply>();
+        askedCards.add(Card.Scarlett);
+        askedCards.add(Card.Plum);
+        askedCards.add(Card.Candle);
+
+        replies.add(new Reply(P1, CardReply.NoCard()));
+        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        String[][] table = cluedo.getTable();
+
+        assertEquals("+", table[Card.Knife.cardNumber() + 1][4]);
+    }
 }
