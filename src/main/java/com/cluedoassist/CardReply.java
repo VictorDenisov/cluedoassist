@@ -28,7 +28,7 @@ public abstract class CardReply implements Serializable {
 
     static class NoCard extends CardReply {
         public int cardNumber() {
-            return -1;
+            return -2;
         }
 
         @Override

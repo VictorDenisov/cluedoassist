@@ -113,17 +113,17 @@ public class Cluedo implements Serializable {
         int playerNumber = playerOrd(asker);
         int cardNumber = card.cardNumber();
         setPlus(cardNumber, playerNumber);
-        rectifyTable();
+        inferenceCycle();
     }
 
     public void makeTurn(String asker, List<Card> askedCards, List<Reply> replies) throws UnknownPlayerException {
         log.add(new LogEntry(asker, askedCards, replies));
-        rectifyTable();
+        inferenceCycle();
     }
 
     public void makeTurn(LogEntry l) throws UnknownPlayerException {
         log.add(l);
-        rectifyTable();
+        inferenceCycle();
     }
 
     private void processLog() throws UnknownPlayerException {
@@ -134,11 +134,15 @@ public class Cluedo implements Serializable {
         }
     }
 
-    private void rectifyTable() throws UnknownPlayerException {
-        processLog();
+    private void rectifyTable() {
         for (int i = 0; i < table[0].length; ++i) {
             solvePlayerHasAllCards(i);
         }
+    }
+
+    private void inferenceCycle() throws UnknownPlayerException {
+        processLog();
+        rectifyTable();
     }
 
     public int playerOrd(String player) throws UnknownPlayerException {
@@ -172,9 +176,12 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply == CardReply.NoCard()) {
+            System.out.println("Player number " + playerNumber);
+            if (r.cardReply.cardNumber() == -2) {
+                System.out.println("Inside NoCard");
                 for (Card c : le.askedCards) {
                     int cardNumber = c.cardNumber();
+                    System.out.println("Processing card number " + cardNumber);
                     table[cardNumber][playerNumber] = Resolution.Minus;
                 }
             }
@@ -185,7 +192,7 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply != CardReply.NoCard()) {
+            if (r.cardReply.cardNumber() != -2) {
                 List<Card> s = allPlusCards(playerNumber);
                 s.addAll(allUnknownCards(playerNumber));
                 s.retainAll(le.askedCards);

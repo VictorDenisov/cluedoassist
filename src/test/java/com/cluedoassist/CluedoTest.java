@@ -59,16 +59,23 @@ public class CluedoTest extends TestCase {
 
     public void testTurnLogEntryBig() throws UnknownPlayerException {
         ArrayList<String> players = new ArrayList<String>();
-        players.add("p1");
+        players.add("P1");
         Cluedo c = new Cluedo(players);
         ArrayList<Card> askedCards = new ArrayList<Card>();
         askedCards.add(Card.Scarlett);
         askedCards.add(Card.Plum);
         askedCards.add(Card.Candle);
         ArrayList<Reply> replies = new ArrayList<Reply>();
-        replies.add(new Reply("p1", CardReply.NoCard()));
+        replies.add(new Reply("P1", CardReply.NoCard()));
         c.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
         String[][] table = c.getTable();
+        for (int i = 0; i < table.length; ++i) {
+            for (int j = 0; j < table[i].length; ++j) {
+                System.out.print(table[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println(c.getLog());
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Plum.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Candle.cardNumber() + 1][4]);
