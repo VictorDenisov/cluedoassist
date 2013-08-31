@@ -158,6 +158,9 @@ public class Cluedo implements Serializable {
         for (int i = 0; i < table.length; ++i) {
             tableModified = tableModified || solveLineOneNonNegative(i);
         }
+        tableModified = tableModified || solveEnvHasOneUnknownCardInGroup(0, 6);
+        tableModified = tableModified || solveEnvHasOneUnknownCardInGroup(6, 12);
+        tableModified = tableModified || solveEnvHasOneUnknownCardInGroup(12, table.length);
         return tableModified;
     }
 
@@ -258,6 +261,24 @@ public class Cluedo implements Serializable {
             for (int i = 0; i < table[cardNumber].length; ++i) {
                 if (table[cardNumber][i] == Resolution.Unknown) {
                     tableModified = tableModified || setPlus(cardNumber, i);
+                }
+            }
+        }
+        return tableModified;
+    }
+
+    private boolean solveEnvHasOneUnknownCardInGroup(int l, int r) {
+        boolean tableModified = false;
+        int minuses = 0;
+        for (int i = l; i < r; ++i) {
+            if (table[i][0] == Resolution.Minus) {
+                ++minuses;
+            }
+        }
+        if (minuses == (r - l - 1)) {
+            for (int i = l; i < r; ++i) {
+                if (table[i][0] != Resolution.Minus) {
+                    tableModified = tableModified || setPlus(i, 0);
                 }
             }
         }

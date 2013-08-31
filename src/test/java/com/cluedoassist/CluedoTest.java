@@ -137,4 +137,17 @@ public class CluedoTest {
         assertEquals("+", table[Card.Revolver.cardNumber() + 1][1]);
         assertEquals("+", table[Card.Kitchen.cardNumber() + 1][1]);
     }
+
+    @Test
+    public void testAllButOneSuspectsEliminated() throws UnknownPlayerException {
+        // All but Scarlett
+        cluedo.setCard(Cluedo.ME, Card.Mustard);
+        cluedo.setCard(Cluedo.ME, Card.White);
+        cluedo.setCard(Cluedo.ME, Card.Green);
+        cluedo.setCard(Cluedo.ME, Card.Peacock);
+        cluedo.setCard(Cluedo.OUT, Card.Plum);
+
+        String[][] table = cluedo.getTable();
+        assertEquals("+", table[Card.Scarlett.cardNumber() + 1][1]);
+    }
 }
