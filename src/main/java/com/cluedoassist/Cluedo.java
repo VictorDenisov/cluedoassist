@@ -1,8 +1,9 @@
 package com.cluedoassist;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import java.io.Serializable;
+
 import java.util.Collections;
 
 public class Cluedo implements Serializable {
@@ -93,6 +94,32 @@ public class Cluedo implements Serializable {
                 case Plus : result[i + 1][j + 1] = "+"; break;
                 case Minus : result[i + 1][j + 1] = "-"; break;
                 case Unknown : result[i + 1][j + 1] = "?"; break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public Map<String, List<Card>> cardsShowedByMe() {
+        HashMap<String, List<Card>> result = new HashMap<String, List<Card>>();
+        for (int i = 0; i < playerCount; ++i) {
+            if (!players.get(i).equals(ME)) {
+                result.put(players.get(i), cardsShowedTo(players.get(i)));
+            }
+        }
+        return result;
+    }
+
+    private List<Card> cardsShowedTo(String player) {
+        ArrayList<Card> result = new ArrayList<Card>();
+        for (LogEntry e : log) {
+            if (e.asker.equals(player)) {
+                for (Reply r : e.replies) {
+                    if (r.replier.equals(ME)) {
+                        if (r.cardReply instanceof CardReply.ActualCard) {
+                            result.add(((CardReply.ActualCard)r.cardReply).card);
+                        }
+                    }
                 }
             }
         }

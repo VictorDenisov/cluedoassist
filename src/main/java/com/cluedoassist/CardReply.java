@@ -49,7 +49,7 @@ public abstract class CardReply implements Serializable {
     }
 
     static class ActualCard extends CardReply {
-        private Card card;
+        Card card;
 
         ActualCard(Card c) {
             this.card = c;
