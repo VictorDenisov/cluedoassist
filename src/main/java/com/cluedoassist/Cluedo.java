@@ -167,14 +167,48 @@ public class Cluedo implements Serializable {
         inferenceCycle();
     }
 
+    public void makeAccusation(Accusation a) throws UnknownPlayerException {
+        int playerNumber = playerOrd(a.asker);
+        for (Card c : a.cards) {
+            int cardNumber = c.cardNumber();
+            setMinus(cardNumber, playerNumber);
+        }
+        log.add(a);
+        inferenceCycle();
+    }
+
     private boolean processLog() throws UnknownPlayerException {
         boolean tableModified = false;
         for (LogEntry logEntry : log) {
-            tableModified = tableModified || solveRepliersHave(logEntry);
-            tableModified = tableModified || solveReplierHasNoCards(logEntry);
-            tableModified = tableModified || solveOnlyOneUnknown(logEntry);
+            if (logEntry instanceof Accusation) {
+                tableModified = tableModified || solveAccusation((Accusation)logEntry);
+            } else {
+                tableModified = tableModified || solveRepliersHave(logEntry);
+                tableModified = tableModified || solveReplierHasNoCards(logEntry);
+                tableModified = tableModified || solveOnlyOneUnknown(logEntry);
+            }
         }
         return tableModified;
+    }
+
+    private boolean solveAccusation(Accusation a) {
+        int plusCount = 0;
+        for (Card c : a.cards) {
+            int cardNumber = c.cardNumber();
+            if (table[cardNumber][ENV_COL] == Resolution.Plus) {
+                ++plusCount;
+            }
+        }
+        if (plusCount == 2) {
+            for (Card c : a.cards) {
+                int cardNumber = c.cardNumber();
+                if (table[cardNumber][ENV_COL] == Resolution.Unknown) {
+                    setMinus(cardNumber, ENV_COL);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean rectifyTable() {

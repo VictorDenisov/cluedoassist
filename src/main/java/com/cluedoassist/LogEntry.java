@@ -5,13 +5,19 @@ import java.util.ArrayList;
 
 import java.io.Serializable;
 
-public final class LogEntry implements Serializable {
+public class LogEntry implements Serializable {
 
     final String asker;
 
     final List<Card> askedCards;
 
     final List<Reply> replies;
+
+    public LogEntry(String asker) {
+        this.asker = asker;
+        askedCards = null;
+        replies = null;
+    }
 
     public LogEntry(String asker, List<Card> askedCards, List<Reply> replies) {
         this.asker = asker;
