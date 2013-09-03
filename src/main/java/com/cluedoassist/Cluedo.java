@@ -225,6 +225,9 @@ public class Cluedo implements Serializable {
         tableModified = tableModified || solveEnvHasOneUnknownCardInGroup(0, 6);
         tableModified = tableModified || solveEnvHasOneUnknownCardInGroup(6, 12);
         tableModified = tableModified || solveEnvHasOneUnknownCardInGroup(12, table.length);
+        tableModified = tableModified || solvePlusInGroup(0, 6);
+        tableModified = tableModified || solvePlusInGroup(6, 12);
+        tableModified = tableModified || solvePlusInGroup(12, table.length);
         return tableModified;
     }
 
@@ -344,6 +347,24 @@ public class Cluedo implements Serializable {
                 if (table[i][playerNumber] == Resolution.Unknown) {
                     setPlus(i, playerNumber);
                     tableModified = true;
+                }
+            }
+        }
+        return tableModified;
+    }
+
+    private boolean solvePlusInGroup(int l, int r) {
+        boolean tableModified = false;
+        int pluses = 0;
+        for (int i = l; i < r; ++i) {
+            if (table[i][0] == Resolution.Plus) {
+                ++pluses;
+            }
+        }
+        if (pluses == 1) {
+            for (int i = l; i < r; ++i) {
+                if (table[i][0] != Resolution.Plus) {
+                    tableModified = tableModified || setMinus(i, 0);
                 }
             }
         }

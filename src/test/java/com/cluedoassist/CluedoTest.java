@@ -150,4 +150,36 @@ public class CluedoTest {
         String[][] table = cluedo.getTable();
         assertEquals("+", table[Card.Scarlett.cardNumber() + 1][1]);
     }
+
+    @Test
+    public void testOnePlusInAGroup() throws UnknownPlayerException {
+        // All but Scarlett
+        cluedo.setCard(Cluedo.ME, Card.Mustard);
+        cluedo.setCard(Cluedo.ME, Card.White);
+        cluedo.setCard(Cluedo.ME, Card.Green);
+        cluedo.setCard(Cluedo.ME, Card.Peacock);
+        cluedo.setCard(Cluedo.OUT, Card.Plum);
+        cluedo.setCard(Cluedo.OUT, Card.Wrench);
+
+        askedCards.add(Card.Mustard);
+        askedCards.add(Card.Plum);
+        askedCards.add(Card.Kitchen);
+
+        replies.add(new Reply(P1, CardReply.NoCard()));
+        replies.add(new Reply(P2, CardReply.NoCard()));
+        replies.add(new Reply(P3, CardReply.NoCard()));
+
+        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+
+        String[][] table = cluedo.getTable();
+        assertEquals("+", table[Card.Kitchen.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Billiard.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Dining.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Bathroom.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Study.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Garage.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Bedroom.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Yard.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Guestroom.cardNumber() + 1][1]);
+    }
 }
