@@ -186,4 +186,24 @@ public class CluedoTest {
         assertEquals("-", table[Card.Yard.cardNumber() + 1][1]);
         assertEquals("-", table[Card.Guestroom.cardNumber() + 1][1]);
     }
+
+    @Test
+    public void testContradiction() throws Exception {
+        cluedo.setCard(Cluedo.ME, Card.Mustard);
+        boolean exceptionHadPlace = false;
+        try {
+            cluedo.setCard(Cluedo.OUT, Card.Mustard);
+        } catch (ContradictionException e) {
+            exceptionHadPlace = true;
+        }
+        String[][] table = cluedo.getTable();
+
+        assertTrue(exceptionHadPlace);
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][2]);
+        assertEquals("+", table[Card.Mustard.cardNumber() + 1][3]);
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][4]);
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][5]);
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][6]);
+    }
 }

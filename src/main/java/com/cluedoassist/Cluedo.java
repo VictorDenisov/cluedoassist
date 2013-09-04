@@ -28,6 +28,10 @@ public class Cluedo implements Serializable {
 
     ArrayList<LogEntry> log;
 
+    private Resolution[][] backupTable;
+
+    private ArrayList<LogEntry> backupLog;
+
     public Cluedo(List<String> players) {
         this.playerCount = players.size() + 1;
         this.players = new ArrayList<String>();
@@ -105,35 +109,94 @@ public class Cluedo implements Serializable {
     public void setCard(String asker, Card card) throws UnknownPlayerException
                                                       , ContradictionException {
         //log.add(new SetCard(asker, card));
+        beginTransaction();
         int playerNumber = playerOrd(asker);
         int cardNumber = card.cardNumber();
-        setPlus(cardNumber, playerNumber);
-        inferenceCycle();
+        try {
+            setPlus(cardNumber, playerNumber);
+            inferenceCycle();
+        } catch (UnknownPlayerException upe) {
+            rollBackTransaction();
+            throw upe;
+        } catch (ContradictionException ce) {
+            rollBackTransaction();
+            throw ce;
+        }
+        commitTransaction();
     }
 
     public void makeTurn( String asker
                         , List<Card> askedCards
                         , List<Reply> replies) throws UnknownPlayerException
                                                     , ContradictionException {
-        log.add(new LogEntry(asker, askedCards, replies));
-        inferenceCycle();
+        makeTurn(new LogEntry(asker, askedCards, replies));
     }
 
     public void makeTurn(LogEntry l) throws UnknownPlayerException
                                           , ContradictionException {
+        beginTransaction();
         log.add(l);
-        inferenceCycle();
+        try {
+            inferenceCycle();
+        } catch (UnknownPlayerException upe) {
+            rollBackTransaction();
+            throw upe;
+        } catch (ContradictionException ce) {
+            rollBackTransaction();
+            throw ce;
+        }
+        commitTransaction();
     }
 
     public void makeAccusation(Accusation a) throws UnknownPlayerException
                                                   , ContradictionException {
-        int playerNumber = playerOrd(a.asker);
-        for (Card c : a.cards) {
-            int cardNumber = c.cardNumber();
-            setMinus(cardNumber, playerNumber);
+        beginTransaction();
+
+        try {
+            int playerNumber = playerOrd(a.asker);
+            for (Card c : a.cards) {
+                int cardNumber = c.cardNumber();
+                setMinus(cardNumber, playerNumber);
+            }
+            log.add(a);
+            inferenceCycle();
+        } catch (UnknownPlayerException upe) {
+            rollBackTransaction();
+            throw upe;
+        } catch (ContradictionException ce) {
+            rollBackTransaction();
+            throw ce;
         }
-        log.add(a);
-        inferenceCycle();
+        commitTransaction();
+    }
+
+    private void beginTransaction() {
+        backupTable = new Resolution[table.length][];
+        for (int i = 0; i < table.length; ++i) {
+            backupTable[i] = new Resolution[table[i].length];
+            for (int j = 0; j < table[i].length; ++j) {
+                backupTable[i][j] = table[i][j];
+            }
+        }
+        backupLog = new ArrayList<LogEntry>(log);
+    }
+
+    private void commitTransaction() {
+        backupTable = null;
+        backupLog = null;
+    }
+
+    private void rollBackTransaction() {
+        table = new Resolution[backupTable.length][];
+        for (int i = 0; i < table.length; ++i) {
+            table[i] = new Resolution[backupTable[i].length];
+            for (int j = 0; j < backupTable[i].length; ++j) {
+                table[i][j] = backupTable[i][j];
+            }
+        }
+        backupTable = null;
+        log = new ArrayList<LogEntry>(backupLog);
+        backupLog = null;
     }
 
     private void calculateCardCount() {
