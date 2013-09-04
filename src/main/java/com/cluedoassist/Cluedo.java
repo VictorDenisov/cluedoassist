@@ -68,18 +68,6 @@ public class Cluedo implements Serializable {
         return Collections.unmodifiableList(players);
     }
 
-    private void calculateCardCount() {
-        int cardCountPerOnePlayer = (cardCount - 3) / playerCount;
-        int outCount = (cardCount - 3) % playerCount;
-
-        cardCountPerPlayer = new int[playerCount + 2];
-        cardCountPerPlayer[ENV_COL] = 3;
-        cardCountPerPlayer[OUT_COL] = outCount;
-        for (int i = 2; i < cardCountPerPlayer.length; ++i) {
-            cardCountPerPlayer[i] = cardCountPerOnePlayer;
-        }
-    }
-
     public String[][] getTable() {
         String[][] result = new String[table.length + 1][];
         for (int i = 0; i < result.length; ++i) {
@@ -112,6 +100,52 @@ public class Cluedo implements Serializable {
             }
         }
         return result;
+    }
+
+    public void setCard(String asker, Card card) throws UnknownPlayerException
+                                                      , ContradictionException {
+        //log.add(new SetCard(asker, card));
+        int playerNumber = playerOrd(asker);
+        int cardNumber = card.cardNumber();
+        setPlus(cardNumber, playerNumber);
+        inferenceCycle();
+    }
+
+    public void makeTurn( String asker
+                        , List<Card> askedCards
+                        , List<Reply> replies) throws UnknownPlayerException
+                                                    , ContradictionException {
+        log.add(new LogEntry(asker, askedCards, replies));
+        inferenceCycle();
+    }
+
+    public void makeTurn(LogEntry l) throws UnknownPlayerException
+                                          , ContradictionException {
+        log.add(l);
+        inferenceCycle();
+    }
+
+    public void makeAccusation(Accusation a) throws UnknownPlayerException
+                                                  , ContradictionException {
+        int playerNumber = playerOrd(a.asker);
+        for (Card c : a.cards) {
+            int cardNumber = c.cardNumber();
+            setMinus(cardNumber, playerNumber);
+        }
+        log.add(a);
+        inferenceCycle();
+    }
+
+    private void calculateCardCount() {
+        int cardCountPerOnePlayer = (cardCount - 3) / playerCount;
+        int outCount = (cardCount - 3) % playerCount;
+
+        cardCountPerPlayer = new int[playerCount + 2];
+        cardCountPerPlayer[ENV_COL] = 3;
+        cardCountPerPlayer[OUT_COL] = outCount;
+        for (int i = 2; i < cardCountPerPlayer.length; ++i) {
+            cardCountPerPlayer[i] = cardCountPerOnePlayer;
+        }
     }
 
     private List<Card> cardsShowedTo(String player) {
@@ -171,40 +205,6 @@ public class Cluedo implements Serializable {
         }
         table[cardNumber][playerNumber] = Resolution.Minus;
         return tableModified;
-    }
-
-    public void setCard(String asker, Card card) throws UnknownPlayerException
-                                                      , ContradictionException {
-        //log.add(new SetCard(asker, card));
-        int playerNumber = playerOrd(asker);
-        int cardNumber = card.cardNumber();
-        setPlus(cardNumber, playerNumber);
-        inferenceCycle();
-    }
-
-    public void makeTurn( String asker
-                        , List<Card> askedCards
-                        , List<Reply> replies) throws UnknownPlayerException
-                                                    , ContradictionException {
-        log.add(new LogEntry(asker, askedCards, replies));
-        inferenceCycle();
-    }
-
-    public void makeTurn(LogEntry l) throws UnknownPlayerException
-                                          , ContradictionException {
-        log.add(l);
-        inferenceCycle();
-    }
-
-    public void makeAccusation(Accusation a) throws UnknownPlayerException
-                                                  , ContradictionException {
-        int playerNumber = playerOrd(a.asker);
-        for (Card c : a.cards) {
-            int cardNumber = c.cardNumber();
-            setMinus(cardNumber, playerNumber);
-        }
-        log.add(a);
-        inferenceCycle();
     }
 
     private boolean processLog() throws UnknownPlayerException

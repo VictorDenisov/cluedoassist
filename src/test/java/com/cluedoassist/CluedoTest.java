@@ -147,12 +147,6 @@ public class CluedoTest {
         cluedo.setCard(Cluedo.OUT, Card.Plum);
 
         String[][] table = cluedo.getTable();
-        for (int i = 0; i < table.length; ++i) {
-            for (int j = 0; j < table[0].length; ++j) {
-                System.out.print(table[i][j] + "\t");
-            }
-            System.out.println();
-        }
         assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
         assertEquals("-", table[Card.White.cardNumber() + 1][1]);
         assertEquals("-", table[Card.Green.cardNumber() + 1][1]);
