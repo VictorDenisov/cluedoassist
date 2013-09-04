@@ -28,22 +28,6 @@ public class Cluedo implements Serializable {
 
     ArrayList<LogEntry> log;
 
-    public List<LogEntry> getLog() {
-        return Collections.unmodifiableList(log);
-    }
-
-    public List<String> getCompartments() {
-        ArrayList<String> result = new ArrayList<String>();
-        result.add(ENVELOPE);
-        result.add(OUT);
-        result.addAll(getPlayers());
-        return result;
-    }
-
-    public List<String> getPlayers() {
-        return new ArrayList<String>(players);
-    }
-
     public Cluedo(List<String> players) {
         this.playerCount = players.size() + 1;
         this.players = new ArrayList<String>();
@@ -59,12 +43,28 @@ public class Cluedo implements Serializable {
         }
         log = new ArrayList<LogEntry>();
 
-        setCardCount();
+        calculateCardCount();
 
         solvePlayerHasAllCards(OUT_COL);
     }
 
-    private void setCardCount() {
+    public List<LogEntry> getLog() {
+        return Collections.unmodifiableList(log);
+    }
+
+    public List<String> getCompartments() {
+        ArrayList<String> result = new ArrayList<String>();
+        result.add(ENVELOPE);
+        result.add(OUT);
+        result.addAll(getPlayers());
+        return result;
+    }
+
+    public List<String> getPlayers() {
+        return Collections.unmodifiableList(players);
+    }
+
+    private void calculateCardCount() {
         int cardCountPerOnePlayer = (cardCount - 3) / playerCount;
         int outCount = (cardCount - 3) % playerCount;
 
