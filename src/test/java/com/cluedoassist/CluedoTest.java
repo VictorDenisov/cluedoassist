@@ -32,7 +32,7 @@ public class CluedoTest {
     }
 
     @Test
-    public void testTurn() throws UnknownPlayerException {
+    public void testTurn() throws Exception {
         askedCards.add(Card.Scarlett);
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(Cluedo.ME, askedCards, replies);
@@ -41,7 +41,7 @@ public class CluedoTest {
     }
 
     @Test
-    public void testTurnLogEntry() throws UnknownPlayerException {
+    public void testTurnLogEntry() throws Exception {
         askedCards.add(Card.Scarlett);
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
@@ -50,7 +50,7 @@ public class CluedoTest {
     }
 
     @Test
-    public void testTurnLogEntryBig() throws UnknownPlayerException {
+    public void testTurnLogEntryBig() throws Exception {
         askedCards.add(Card.Scarlett);
         askedCards.add(Card.Plum);
         askedCards.add(Card.Candle);
@@ -64,7 +64,7 @@ public class CluedoTest {
     }
 
     @Test
-    public void testTurnOneUnknown() throws UnknownPlayerException {
+    public void testTurnOneUnknown() throws Exception {
         // Turn 1
         askedCards.add(Card.Scarlett);
         askedCards.add(Card.Plum);
@@ -88,7 +88,7 @@ public class CluedoTest {
     }
 
     @Test
-    public void testTurnOneUnknownInTheBeginning() throws UnknownPlayerException {
+    public void testTurnOneUnknownInTheBeginning() throws Exception {
         // Turn 1
         askedCards.add(Card.Scarlett);
         askedCards.add(Card.Plum);
@@ -112,10 +112,9 @@ public class CluedoTest {
     }
 
     @Test
-    public void testAllReplyNo() throws UnknownPlayerException {
+    public void testAllReplyNo() throws Exception {
         cluedo.setCard(Cluedo.OUT, Card.Plum);
         cluedo.setCard(Cluedo.OUT, Card.Pipe);
-        cluedo.setCard(Cluedo.OUT, Card.Yard);
 
         cluedo.setCard(Cluedo.ME, Card.White);
         cluedo.setCard(Cluedo.ME, Card.Peacock);
@@ -139,7 +138,7 @@ public class CluedoTest {
     }
 
     @Test
-    public void testAllButOneSuspectsEliminated() throws UnknownPlayerException {
+    public void testAllButOneSuspectsEliminated() throws Exception {
         // All but Scarlett
         cluedo.setCard(Cluedo.ME, Card.Mustard);
         cluedo.setCard(Cluedo.ME, Card.White);
@@ -148,11 +147,22 @@ public class CluedoTest {
         cluedo.setCard(Cluedo.OUT, Card.Plum);
 
         String[][] table = cluedo.getTable();
+        for (int i = 0; i < table.length; ++i) {
+            for (int j = 0; j < table[0].length; ++j) {
+                System.out.print(table[i][j] + "\t");
+            }
+            System.out.println();
+        }
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.White.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Green.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Peacock.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Plum.cardNumber() + 1][1]);
         assertEquals("+", table[Card.Scarlett.cardNumber() + 1][1]);
     }
 
     @Test
-    public void testOnePlusInAGroup() throws UnknownPlayerException {
+    public void testOnePlusInAGroup() throws Exception {
         // All but Scarlett
         cluedo.setCard(Cluedo.ME, Card.Mustard);
         cluedo.setCard(Cluedo.ME, Card.White);
