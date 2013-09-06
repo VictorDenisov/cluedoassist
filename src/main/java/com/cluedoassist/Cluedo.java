@@ -110,9 +110,9 @@ public class Cluedo implements Serializable {
                                                       , ContradictionException {
         //log.add(new SetCard(asker, card));
         beginTransaction();
-        int playerNumber = playerOrd(asker);
-        int cardNumber = card.cardNumber();
         try {
+            int playerNumber = playerOrd(asker);
+            int cardNumber = card.cardNumber();
             setPlus(cardNumber, playerNumber);
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
@@ -153,11 +153,6 @@ public class Cluedo implements Serializable {
         beginTransaction();
 
         try {
-            int playerNumber = playerOrd(a.asker);
-            for (Card c : a.cards) {
-                int cardNumber = c.cardNumber();
-                setMinus(cardNumber, playerNumber);
-            }
             log.add(a);
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
@@ -278,8 +273,10 @@ public class Cluedo implements Serializable {
         boolean tableModified = false;
         for (LogEntry logEntry : log) {
             if (logEntry instanceof Accusation) {
+                boolean doAccusation = doAccusation((Accusation)logEntry);
                 boolean solveAccusationValue = solveAccusation((Accusation)logEntry);
                 tableModified = tableModified || solveAccusationValue;
+                tableModified = tableModified || doAccusation;
             } else {
                 Suggestion suggestion = (Suggestion) logEntry;
                 boolean solveRepliersHaveValue = solveRepliersHave(suggestion);
@@ -290,6 +287,18 @@ public class Cluedo implements Serializable {
                 tableModified = tableModified || solveReplierHasNoCardsValue;
                 tableModified = tableModified || solveOnlyOneUnknownValue;
             }
+        }
+        return tableModified;
+    }
+
+    private boolean doAccusation(Accusation a) throws UnknownPlayerException
+                                                    , ContradictionException {
+        int playerNumber = playerOrd(a.asker);
+        boolean tableModified = false;
+        for (Card c : a.cards) {
+            int cardNumber = c.cardNumber();
+            boolean result = setMinus(cardNumber, playerNumber);
+            tableModified = tableModified || result;
         }
         return tableModified;
     }
