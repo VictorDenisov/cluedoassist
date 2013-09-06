@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 public final class Accusation implements LogEntry {
 
-    final String asker;
+    public final String asker;
 
-    final List<Card> cards;
+    public final List<Card> cards;
 
     public Accusation(String asker, List<Card> cards) {
         this.asker = asker;

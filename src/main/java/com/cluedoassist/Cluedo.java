@@ -111,9 +111,7 @@ public class Cluedo implements Serializable {
         //log.add(new SetCard(asker, card));
         beginTransaction();
         try {
-            int playerNumber = playerOrd(asker);
-            int cardNumber = card.cardNumber();
-            setPlus(cardNumber, playerNumber);
+            log.add(new SetCard(asker, card));
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
@@ -277,6 +275,11 @@ public class Cluedo implements Serializable {
                 boolean solveAccusationValue = solveAccusation((Accusation)logEntry);
                 tableModified = tableModified || solveAccusationValue;
                 tableModified = tableModified || doAccusation;
+            } else if (logEntry instanceof SetCard) {
+                SetCard s = (SetCard) logEntry;
+                int playerNumber = playerOrd(s.player);
+                int cardNumber = s.card.cardNumber();
+                setPlus(cardNumber, playerNumber);
             } else {
                 Suggestion suggestion = (Suggestion) logEntry;
                 boolean solveRepliersHaveValue = solveRepliersHave(suggestion);

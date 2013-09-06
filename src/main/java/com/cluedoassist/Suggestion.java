@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Suggestion implements LogEntry {
 
-    final String asker;
+    public final String asker;
 
-    final List<Card> askedCards;
+    public final List<Card> askedCards;
 
-    final List<Reply> replies;
+    public final List<Reply> replies;
 
     public Suggestion(String asker, List<Card> askedCards, List<Reply> replies) {
         this.asker = asker;
