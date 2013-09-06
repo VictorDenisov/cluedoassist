@@ -5,12 +5,14 @@ import java.util.ArrayList;
 
 import java.io.Serializable;
 
-public final class Accusation extends LogEntry {
+public final class Accusation implements LogEntry {
+
+    final String asker;
 
     final List<Card> cards;
 
     public Accusation(String asker, List<Card> cards) {
-        super(asker);
+        this.asker = asker;
 
         this.cards = new ArrayList<Card>(cards);
     }

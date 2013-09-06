@@ -129,10 +129,10 @@ public class Cluedo implements Serializable {
                         , List<Card> askedCards
                         , List<Reply> replies) throws UnknownPlayerException
                                                     , ContradictionException {
-        makeTurn(new LogEntry(asker, askedCards, replies));
+        makeTurn(new Suggestion(asker, askedCards, replies));
     }
 
-    public void makeTurn(LogEntry l) throws UnknownPlayerException
+    public void makeTurn(Suggestion l) throws UnknownPlayerException
                                           , ContradictionException {
         beginTransaction();
         log.add(l);
@@ -188,7 +188,7 @@ public class Cluedo implements Serializable {
 
     private void rollBackTransaction() {
         table = new Resolution[backupTable.length][];
-        for (int i = 0; i < table.length; ++i) {
+        for (int i = 0; i < backupTable.length; ++i) {
             table[i] = new Resolution[backupTable[i].length];
             for (int j = 0; j < backupTable[i].length; ++j) {
                 table[i][j] = backupTable[i][j];
@@ -214,11 +214,14 @@ public class Cluedo implements Serializable {
     private List<Card> cardsShowedTo(String player) {
         ArrayList<Card> result = new ArrayList<Card>();
         for (LogEntry e : log) {
-            if (e.asker.equals(player)) {
-                for (Reply r : e.replies) {
-                    if (r.replier.equals(ME)) {
-                        if (r.cardReply instanceof CardReply.ActualCard) {
-                            result.add(((CardReply.ActualCard)r.cardReply).card);
+            if (e instanceof Suggestion) {
+                Suggestion s = (Suggestion) e;
+                if (s.asker.equals(player)) {
+                    for (Reply r : s.replies) {
+                        if (r.replier.equals(ME)) {
+                            if (r.cardReply instanceof CardReply.ActualCard) {
+                                result.add(((CardReply.ActualCard)r.cardReply).card);
+                            }
                         }
                     }
                 }
@@ -278,9 +281,10 @@ public class Cluedo implements Serializable {
                 boolean solveAccusationValue = solveAccusation((Accusation)logEntry);
                 tableModified = tableModified || solveAccusationValue;
             } else {
-                boolean solveRepliersHaveValue = solveRepliersHave(logEntry);
-                boolean solveReplierHasNoCardsValue = solveReplierHasNoCards(logEntry);
-                boolean solveOnlyOneUnknownValue = solveOnlyOneUnknown(logEntry);
+                Suggestion suggestion = (Suggestion) logEntry;
+                boolean solveRepliersHaveValue = solveRepliersHave(suggestion);
+                boolean solveReplierHasNoCardsValue = solveReplierHasNoCards(suggestion);
+                boolean solveOnlyOneUnknownValue = solveOnlyOneUnknown(suggestion);
 
                 tableModified = tableModified || solveRepliersHaveValue;
                 tableModified = tableModified || solveReplierHasNoCardsValue;
@@ -381,7 +385,7 @@ public class Cluedo implements Serializable {
     }
 
     /* Processes the situation when replier shows known card. */
-    private boolean solveRepliersHave(LogEntry le)
+    private boolean solveRepliersHave(Suggestion le)
                                                 throws UnknownPlayerException
                                                      , ContradictionException {
         boolean tableModified = false;
@@ -399,7 +403,7 @@ public class Cluedo implements Serializable {
     }
 
     /* Processes the situation when replier shows no cards. */
-    private boolean solveReplierHasNoCards(LogEntry le)
+    private boolean solveReplierHasNoCards(Suggestion le)
                                                 throws UnknownPlayerException
                                                      , ContradictionException {
         boolean tableModified = false;
@@ -417,7 +421,7 @@ public class Cluedo implements Serializable {
         return tableModified;
     }
 
-    private boolean solveOnlyOneUnknown(LogEntry le)
+    private boolean solveOnlyOneUnknown(Suggestion le)
                                                 throws UnknownPlayerException
                                                      , ContradictionException {
         boolean tableModified = false;

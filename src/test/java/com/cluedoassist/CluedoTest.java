@@ -44,7 +44,7 @@ public class CluedoTest {
     public void testTurnLogEntry() throws Exception {
         askedCards.add(Card.Scarlett);
         replies.add(new Reply(P1, CardReply.NoCard()));
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
     }
@@ -56,7 +56,7 @@ public class CluedoTest {
         askedCards.add(Card.Candle);
 
         replies.add(new Reply(P1, CardReply.NoCard()));
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
         assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
         assertEquals("-", table[Card.Plum.cardNumber() + 1][4]);
@@ -71,7 +71,7 @@ public class CluedoTest {
         askedCards.add(Card.Candle);
 
         replies.add(new Reply(P1, CardReply.NoCard()));
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
 
         // Turn 2
         askedCards = new ArrayList<Card>();
@@ -81,7 +81,7 @@ public class CluedoTest {
         askedCards.add(Card.Knife); // One card different
 
         replies.add(new Reply(P1, CardReply.UnknownCard()));
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
 
         assertEquals("+", table[Card.Knife.cardNumber() + 1][4]);
@@ -95,7 +95,7 @@ public class CluedoTest {
         askedCards.add(Card.Knife); // One card different
 
         replies.add(new Reply(P1, CardReply.UnknownCard()));
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
 
         // Turn 2
         askedCards = new ArrayList<Card>();
@@ -105,7 +105,7 @@ public class CluedoTest {
         askedCards.add(Card.Candle);
 
         replies.add(new Reply(P1, CardReply.NoCard()));
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
 
         assertEquals("+", table[Card.Knife.cardNumber() + 1][4]);
@@ -129,7 +129,7 @@ public class CluedoTest {
         replies.add(new Reply(P2, CardReply.NoCard()));
         replies.add(new Reply(P3, CardReply.NoCard()));
 
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
 
         String[][] table = cluedo.getTable();
         assertEquals("+", table[Card.Scarlett.cardNumber() + 1][1]);
@@ -173,7 +173,7 @@ public class CluedoTest {
         replies.add(new Reply(P2, CardReply.NoCard()));
         replies.add(new Reply(P3, CardReply.NoCard()));
 
-        cluedo.makeTurn(new LogEntry(Cluedo.ME, askedCards, replies));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
 
         String[][] table = cluedo.getTable();
         assertEquals("+", table[Card.Kitchen.cardNumber() + 1][1]);
