@@ -20,6 +20,6 @@ public class Suggestion implements LogEntry {
 
     @Override
     public String toString() {
-        return asker + " " + askedCards + " " + replies;
+        return "Suggestion : " + asker + " " + askedCards + " " + replies;
     }
 }

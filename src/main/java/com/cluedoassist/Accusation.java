@@ -19,6 +19,6 @@ public final class Accusation implements LogEntry {
 
     @Override
     public String toString() {
-        return asker + " " + cards;
+        return "Accusation: " + asker + " " + cards;
     }
 }

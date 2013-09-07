@@ -10,4 +10,9 @@ public class SetCard implements LogEntry {
         this.player = player;
         this.card = card;
     }
+
+    @Override
+    public String toString() {
+        return "SetCard : " + player + " " + card;
+    }
 }
