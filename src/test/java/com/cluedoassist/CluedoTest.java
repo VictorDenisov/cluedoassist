@@ -4,7 +4,7 @@ import org.testng.annotations.*;
 
 import static org.testng.AssertJUnit.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class CluedoTest {
 
@@ -211,7 +211,7 @@ public class CluedoTest {
     public void testThreeCardsReplied() throws Exception {
         askedCards.add(Card.Mustard);
         askedCards.add(Card.Knife);
-        askedCards.add(Card.Kitchen); // One card different
+        askedCards.add(Card.Kitchen);
 
         replies.add(new Reply(P1, CardReply.UnknownCard()));
         replies.add(new Reply(P2, CardReply.UnknownCard()));
@@ -223,5 +223,22 @@ public class CluedoTest {
         assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
         assertEquals("-", table[Card.Knife.cardNumber() + 1][1]);
         assertEquals("-", table[Card.Kitchen.cardNumber() + 1][1]);
+    }
+
+    @Test
+    public void testPossibleCardReplies() throws Exception {
+        cluedo.setCard(P1, Card.Mustard);
+        cluedo.setCard(Cluedo.ME, Card.Kitchen);
+
+        Card[] cards = new Card[3];
+        cards[0] = Card.Mustard;
+        cards[1] = Card.Knife;
+        cards[2] = Card.Kitchen;
+
+        List<CardReply> r = cluedo.possibleCardReplies(P1, cards);
+        assertEquals(CardReply.UNKNOWN, r.get(0).cardNumber());
+        assertEquals(Card.Mustard.cardNumber(), r.get(1).cardNumber());
+        assertEquals(Card.Knife.cardNumber(), r.get(2).cardNumber());
+        assertEquals(3, r.size()); // There is no Kitchen card.
     }
 }

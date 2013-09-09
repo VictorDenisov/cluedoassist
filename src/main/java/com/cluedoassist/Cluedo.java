@@ -163,6 +163,44 @@ public class Cluedo implements Serializable {
         commitTransaction();
     }
 
+    public ArrayList<CardReply> possibleCardReplies( String replier
+                                                   , Card[] askedCards
+                                                   )
+                                                throws UnknownPlayerException {
+        int playerNumber = playerOrd(replier);
+        ArrayList<CardReply> result = new ArrayList<CardReply>();
+        if (hasNoneOf(playerNumber, askedCards)) {
+            result.add(CardReply.NoCard());
+        }
+        if (hasNonNegativeOf(playerNumber, askedCards)) {
+            result.add(CardReply.UnknownCard());
+        }
+        for (Card c : askedCards) {
+            if (table[c.cardNumber()][playerNumber] != Resolution.Minus) {
+                result.add(CardReply.ActualCard(c));
+            }
+        }
+        return result;
+    }
+
+    private boolean hasNoneOf(int playerNumber, Card[] cards) {
+        for (Card c : cards) {
+            if (table[c.cardNumber()][playerNumber] == Resolution.Plus) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasNonNegativeOf(int playerNumber, Card[] cards) {
+        for (Card c : cards) {
+            if (table[c.cardNumber()][playerNumber] != Resolution.Minus) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void beginTransaction() {
         backupTable = new Resolution[table.length][];
         for (int i = 0; i < table.length; ++i) {
