@@ -206,4 +206,22 @@ public class CluedoTest {
         assertEquals("-", table[Card.Mustard.cardNumber() + 1][5]);
         assertEquals("-", table[Card.Mustard.cardNumber() + 1][6]);
     }
+
+    @Test
+    public void testThreeCardsReplied() throws Exception {
+        askedCards.add(Card.Mustard);
+        askedCards.add(Card.Knife);
+        askedCards.add(Card.Kitchen); // One card different
+
+        replies.add(new Reply(P1, CardReply.UnknownCard()));
+        replies.add(new Reply(P2, CardReply.UnknownCard()));
+        replies.add(new Reply(P3, CardReply.UnknownCard()));
+        cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
+
+        String[][] table = cluedo.getTable();
+
+        assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Knife.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Kitchen.cardNumber() + 1][1]);
+    }
 }

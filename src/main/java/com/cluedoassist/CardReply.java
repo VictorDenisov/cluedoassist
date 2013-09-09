@@ -22,13 +22,17 @@ public abstract class CardReply implements Serializable {
         // disable direct instantiation
     }
 
+    public static final int NO_CARD = -2;
+
+    public static final int UNKNOWN = -1;
+
     private static final NoCard noCard = new NoCard();
 
     private static final UnknownCard unknownCard = new UnknownCard();
 
     static class NoCard extends CardReply {
         public int cardNumber() {
-            return -2;
+            return NO_CARD;
         }
 
         @Override
@@ -39,7 +43,7 @@ public abstract class CardReply implements Serializable {
 
     static class UnknownCard extends CardReply {
         public int cardNumber() {
-            return -1;
+            return UNKNOWN;
         }
 
         @Override

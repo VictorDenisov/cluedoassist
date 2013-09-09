@@ -285,10 +285,12 @@ public class Cluedo implements Serializable {
                 boolean solveRepliersHaveValue = solveRepliersHave(suggestion);
                 boolean solveReplierHasNoCardsValue = solveReplierHasNoCards(suggestion);
                 boolean solveOnlyOneUnknownValue = solveOnlyOneUnknown(suggestion);
+                boolean solveThreeCardsReplied = solveThreeCardsReplied(suggestion);
 
                 tableModified = tableModified || solveRepliersHaveValue;
                 tableModified = tableModified || solveReplierHasNoCardsValue;
                 tableModified = tableModified || solveOnlyOneUnknownValue;
+                tableModified = tableModified || solveThreeCardsReplied;
             }
         }
         return tableModified;
@@ -449,6 +451,26 @@ public class Cluedo implements Serializable {
                     boolean setPlusValue = setPlus(cardNumber, playerNumber);
                     tableModified = tableModified || setPlusValue;
                 }
+            }
+        }
+        return tableModified;
+    }
+
+    private boolean solveThreeCardsReplied(Suggestion le)
+                                                throws UnknownPlayerException
+                                                     , ContradictionException {
+        boolean tableModified = false;
+        int countCardReplies = 0;
+        for (Reply r : le.replies) {
+            if (r.cardReply.cardNumber() != CardReply.NO_CARD) {
+                ++countCardReplies;
+            }
+        }
+        if (countCardReplies == 3) {
+            for (Card c : le.askedCards) {
+                int cardNumber = c.cardNumber();
+                boolean value = setMinus(cardNumber, ENV_COL);
+                tableModified = tableModified || value;
             }
         }
         return tableModified;
