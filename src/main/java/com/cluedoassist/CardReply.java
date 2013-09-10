@@ -16,6 +16,16 @@ public abstract class CardReply implements Serializable {
         return new ActualCard(c);
     }
 
+    public static CardReply valueOf(String s) {
+        if (NOCARD_S.equals(s)) {
+            return NoCard();
+        } else if (UNKNOWN_S.equals(s)) {
+            return UnknownCard();
+        } else {
+            return ActualCard(Card.valueOf(s));
+        }
+    }
+
     public abstract int ordinal();
 
     private CardReply() {
