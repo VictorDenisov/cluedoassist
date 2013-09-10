@@ -28,6 +28,6 @@ public class App {
             }
             System.out.println();
         }
-        System.out.println(c.getTable()[Card.Scarlett.cardNumber() + 1][4]);
+        System.out.println(c.getTable()[Card.Scarlett.ordinal() + 1][4]);
     }
 }

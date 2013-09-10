@@ -176,7 +176,7 @@ public class Cluedo implements Serializable {
             result.add(CardReply.UnknownCard());
         }
         for (Card c : askedCards) {
-            if (table[c.cardNumber()][playerNumber] != Resolution.Minus) {
+            if (table[c.ordinal()][playerNumber] != Resolution.Minus) {
                 result.add(CardReply.ActualCard(c));
             }
         }
@@ -185,7 +185,7 @@ public class Cluedo implements Serializable {
 
     private boolean hasNoneOf(int playerNumber, Card[] cards) {
         for (Card c : cards) {
-            if (table[c.cardNumber()][playerNumber] == Resolution.Plus) {
+            if (table[c.ordinal()][playerNumber] == Resolution.Plus) {
                 return false;
             }
         }
@@ -194,7 +194,7 @@ public class Cluedo implements Serializable {
 
     private boolean hasNonNegativeOf(int playerNumber, Card[] cards) {
         for (Card c : cards) {
-            if (table[c.cardNumber()][playerNumber] != Resolution.Minus) {
+            if (table[c.ordinal()][playerNumber] != Resolution.Minus) {
                 return true;
             }
         }
@@ -316,7 +316,7 @@ public class Cluedo implements Serializable {
             } else if (logEntry instanceof SetCard) {
                 SetCard s = (SetCard) logEntry;
                 int playerNumber = playerOrd(s.player);
-                int cardNumber = s.card.cardNumber();
+                int cardNumber = s.card.ordinal();
                 setPlus(cardNumber, playerNumber);
             } else {
                 Suggestion suggestion = (Suggestion) logEntry;
@@ -339,7 +339,7 @@ public class Cluedo implements Serializable {
         int playerNumber = playerOrd(a.asker);
         boolean tableModified = false;
         for (Card c : a.cards) {
-            int cardNumber = c.cardNumber();
+            int cardNumber = c.ordinal();
             boolean result = setMinus(cardNumber, playerNumber);
             tableModified = tableModified || result;
         }
@@ -350,14 +350,14 @@ public class Cluedo implements Serializable {
                                     throws ContradictionException {
         int plusCount = 0;
         for (Card c : a.cards) {
-            int cardNumber = c.cardNumber();
+            int cardNumber = c.ordinal();
             if (table[cardNumber][ENV_COL] == Resolution.Plus) {
                 ++plusCount;
             }
         }
         if (plusCount == 2) {
             for (Card c : a.cards) {
-                int cardNumber = c.cardNumber();
+                int cardNumber = c.ordinal();
                 if (table[cardNumber][ENV_COL] == Resolution.Unknown) {
                     setMinus(cardNumber, ENV_COL);
                     return true;
@@ -444,7 +444,7 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            int cardNumber = r.cardReply.cardNumber();
+            int cardNumber = r.cardReply.ordinal();
             if (cardNumber < 0) {
                 continue;
             }
@@ -462,9 +462,9 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.cardNumber() == -2) {
+            if (r.cardReply.ordinal() == -2) {
                 for (Card c : le.askedCards) {
-                    int cardNumber = c.cardNumber();
+                    int cardNumber = c.ordinal();
                     boolean setMinusValue = setMinus(cardNumber, playerNumber);
                     tableModified = tableModified || setMinusValue;
                 }
@@ -480,12 +480,12 @@ public class Cluedo implements Serializable {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.cardNumber() == -1) {
+            if (r.cardReply.ordinal() == -1) {
                 List<Card> s = allPlusCards(playerNumber);
                 s.addAll(allUnknownCards(playerNumber));
                 s.retainAll(le.askedCards);
                 if (s.size() == 1) {
-                    int cardNumber = s.get(0).cardNumber();
+                    int cardNumber = s.get(0).ordinal();
                     boolean setPlusValue = setPlus(cardNumber, playerNumber);
                     tableModified = tableModified || setPlusValue;
                 }
@@ -500,13 +500,13 @@ public class Cluedo implements Serializable {
         boolean tableModified = false;
         int countCardReplies = 0;
         for (Reply r : le.replies) {
-            if (r.cardReply.cardNumber() != CardReply.NO_CARD) {
+            if (r.cardReply.ordinal() != CardReply.NO_CARD) {
                 ++countCardReplies;
             }
         }
         if (countCardReplies == 3) {
             for (Card c : le.askedCards) {
-                int cardNumber = c.cardNumber();
+                int cardNumber = c.ordinal();
                 boolean value = setMinus(cardNumber, ENV_COL);
                 tableModified = tableModified || value;
             }

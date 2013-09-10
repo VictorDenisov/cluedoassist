@@ -23,13 +23,4 @@ public enum Card {
     Bedroom,
     Yard,
     Guestroom;
-    public int cardNumber() {
-        Card[] values = Card.values();
-        for (int i = 0; i < values.length; ++i) {
-            if (values[i] == this) {
-                return i;
-            }
-        }
-        throw new RuntimeException("No card found");
-    }
 }

@@ -37,7 +37,7 @@ public class CluedoTest {
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(Cluedo.ME, askedCards, replies);
         String[][] table = cluedo.getTable();
-        assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
+        assertEquals("-", table[Card.Scarlett.ordinal() + 1][4]);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CluedoTest {
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
-        assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
+        assertEquals("-", table[Card.Scarlett.ordinal() + 1][4]);
     }
 
     @Test
@@ -58,9 +58,9 @@ public class CluedoTest {
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
-        assertEquals("-", table[Card.Scarlett.cardNumber() + 1][4]);
-        assertEquals("-", table[Card.Plum.cardNumber() + 1][4]);
-        assertEquals("-", table[Card.Candle.cardNumber() + 1][4]);
+        assertEquals("-", table[Card.Scarlett.ordinal() + 1][4]);
+        assertEquals("-", table[Card.Plum.ordinal() + 1][4]);
+        assertEquals("-", table[Card.Candle.ordinal() + 1][4]);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class CluedoTest {
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
 
-        assertEquals("+", table[Card.Knife.cardNumber() + 1][4]);
+        assertEquals("+", table[Card.Knife.ordinal() + 1][4]);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class CluedoTest {
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
 
-        assertEquals("+", table[Card.Knife.cardNumber() + 1][4]);
+        assertEquals("+", table[Card.Knife.ordinal() + 1][4]);
     }
 
     @Test
@@ -132,9 +132,9 @@ public class CluedoTest {
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
 
         String[][] table = cluedo.getTable();
-        assertEquals("+", table[Card.Scarlett.cardNumber() + 1][1]);
-        assertEquals("+", table[Card.Revolver.cardNumber() + 1][1]);
-        assertEquals("+", table[Card.Kitchen.cardNumber() + 1][1]);
+        assertEquals("+", table[Card.Scarlett.ordinal() + 1][1]);
+        assertEquals("+", table[Card.Revolver.ordinal() + 1][1]);
+        assertEquals("+", table[Card.Kitchen.ordinal() + 1][1]);
     }
 
     @Test
@@ -147,12 +147,12 @@ public class CluedoTest {
         cluedo.setCard(Cluedo.OUT, Card.Plum);
 
         String[][] table = cluedo.getTable();
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.White.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Green.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Peacock.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Plum.cardNumber() + 1][1]);
-        assertEquals("+", table[Card.Scarlett.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][1]);
+        assertEquals("-", table[Card.White.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Green.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Peacock.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Plum.ordinal() + 1][1]);
+        assertEquals("+", table[Card.Scarlett.ordinal() + 1][1]);
     }
 
     @Test
@@ -176,15 +176,15 @@ public class CluedoTest {
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
 
         String[][] table = cluedo.getTable();
-        assertEquals("+", table[Card.Kitchen.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Billiard.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Dining.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Bathroom.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Study.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Garage.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Bedroom.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Yard.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Guestroom.cardNumber() + 1][1]);
+        assertEquals("+", table[Card.Kitchen.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Billiard.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Dining.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Bathroom.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Study.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Garage.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Bedroom.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Yard.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Guestroom.ordinal() + 1][1]);
     }
 
     @Test
@@ -199,12 +199,12 @@ public class CluedoTest {
         String[][] table = cluedo.getTable();
 
         assertTrue(exceptionHadPlace);
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][2]);
-        assertEquals("+", table[Card.Mustard.cardNumber() + 1][3]);
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][4]);
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][5]);
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][6]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][2]);
+        assertEquals("+", table[Card.Mustard.ordinal() + 1][3]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][4]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][5]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][6]);
     }
 
     @Test
@@ -220,9 +220,9 @@ public class CluedoTest {
 
         String[][] table = cluedo.getTable();
 
-        assertEquals("-", table[Card.Mustard.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Knife.cardNumber() + 1][1]);
-        assertEquals("-", table[Card.Kitchen.cardNumber() + 1][1]);
+        assertEquals("-", table[Card.Mustard.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Knife.ordinal() + 1][1]);
+        assertEquals("-", table[Card.Kitchen.ordinal() + 1][1]);
     }
 
     @Test
@@ -236,9 +236,9 @@ public class CluedoTest {
         cards[2] = Card.Kitchen;
 
         List<CardReply> r = cluedo.possibleCardReplies(P1, cards);
-        assertEquals(CardReply.UNKNOWN, r.get(0).cardNumber());
-        assertEquals(Card.Mustard.cardNumber(), r.get(1).cardNumber());
-        assertEquals(Card.Knife.cardNumber(), r.get(2).cardNumber());
+        assertEquals(CardReply.UNKNOWN, r.get(0).ordinal());
+        assertEquals(Card.Mustard.ordinal(), r.get(1).ordinal());
+        assertEquals(Card.Knife.ordinal(), r.get(2).ordinal());
         assertEquals(3, r.size()); // There is no Kitchen card.
     }
 }

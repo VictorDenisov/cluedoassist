@@ -16,7 +16,7 @@ public abstract class CardReply implements Serializable {
         return new ActualCard(c);
     }
 
-    public abstract int cardNumber();
+    public abstract int ordinal();
 
     private CardReply() {
         // disable direct instantiation
@@ -31,7 +31,7 @@ public abstract class CardReply implements Serializable {
     private static final UnknownCard unknownCard = new UnknownCard();
 
     static class NoCard extends CardReply {
-        public int cardNumber() {
+        public int ordinal() {
             return NO_CARD;
         }
 
@@ -42,7 +42,7 @@ public abstract class CardReply implements Serializable {
     }
 
     static class UnknownCard extends CardReply {
-        public int cardNumber() {
+        public int ordinal() {
             return UNKNOWN;
         }
 
@@ -59,14 +59,8 @@ public abstract class CardReply implements Serializable {
             this.card = c;
         }
 
-        public int cardNumber() {
-            Card[] cs = Card.values();
-            for (int i = 0; i < cs.length; ++i) {
-                if (cs[i] == card) {
-                    return i;
-                }
-            }
-            throw new RuntimeException("Unknown card : " + card);
+        public int ordinal() {
+            return card.ordinal();
         }
 
         @Override
