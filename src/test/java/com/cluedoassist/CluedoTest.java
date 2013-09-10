@@ -236,7 +236,7 @@ public class CluedoTest {
         cards[2] = Card.Kitchen;
 
         List<CardReply> r = cluedo.possibleCardReplies(P1, cards);
-        assertEquals(CardReply.UNKNOWN, r.get(0).ordinal());
+        assertEquals(CardReply.UNKNOWN_INT, r.get(0).ordinal());
         assertEquals(Card.Mustard.ordinal(), r.get(1).ordinal());
         assertEquals(Card.Knife.ordinal(), r.get(2).ordinal());
         assertEquals(3, r.size()); // There is no Kitchen card.

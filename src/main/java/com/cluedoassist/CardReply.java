@@ -22,9 +22,13 @@ public abstract class CardReply implements Serializable {
         // disable direct instantiation
     }
 
-    public static final int NO_CARD = -2;
+    public static final int NOCARD_INT = -2;
 
-    public static final int UNKNOWN = -1;
+    public static final int UNKNOWN_INT = -1;
+
+    public static final String NOCARD_S = "NoCard";
+
+    public static final String UNKNOWN_S = "Unknown";
 
     private static final NoCard noCard = new NoCard();
 
@@ -32,23 +36,23 @@ public abstract class CardReply implements Serializable {
 
     static class NoCard extends CardReply {
         public int ordinal() {
-            return NO_CARD;
+            return NOCARD_INT;
         }
 
         @Override
         public String toString() {
-            return "NoCard";
+            return NOCARD_S;
         }
     }
 
     static class UnknownCard extends CardReply {
         public int ordinal() {
-            return UNKNOWN;
+            return UNKNOWN_INT;
         }
 
         @Override
         public String toString() {
-            return "UnknownCard";
+            return UNKNOWN_S;
         }
     }
 
@@ -65,7 +69,7 @@ public abstract class CardReply implements Serializable {
 
         @Override
         public String toString() {
-            return card + "";
+            return card.toString();
         }
     }
 

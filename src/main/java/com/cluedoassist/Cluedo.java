@@ -500,7 +500,7 @@ public class Cluedo implements Serializable {
         boolean tableModified = false;
         int countCardReplies = 0;
         for (Reply r : le.replies) {
-            if (r.cardReply.ordinal() != CardReply.NO_CARD) {
+            if (r.cardReply.ordinal() != CardReply.NOCARD_INT) {
                 ++countCardReplies;
             }
         }
