@@ -38,6 +38,14 @@ public class Cluedo implements Serializable {
         this.players.add(ME);
         this.players.addAll(players);
         this.currentPlayer = 0;
+        log = new ArrayList<LogEntry>();
+
+        calculateCardCount();
+
+        newTable();
+    }
+
+    private void newTable() {
         table = new Resolution[cardCount][];
         for (int i = 0; i < cardCount; ++i) {
             table[i] = new Resolution[playerCount + 2];
@@ -45,9 +53,6 @@ public class Cluedo implements Serializable {
                 table[i][j] = Resolution.Unknown;
             }
         }
-        log = new ArrayList<LogEntry>();
-
-        calculateCardCount();
 
         try {
             solvePlayerHasAllCards(OUT_COL);
@@ -434,6 +439,24 @@ public class Cluedo implements Serializable {
             }
             throw new UnknownPlayerException("Unknown player : " + player);
         }
+    }
+
+    public void replaceLog(List<LogEntry> l) throws UnknownPlayerException
+                                                  , ContradictionException {
+        beginTransaction();
+        newTable();
+        log.clear();
+        log.addAll(l);
+        try {
+            inferenceCycle();
+        } catch (UnknownPlayerException upe) {
+            rollBackTransaction();
+            throw upe;
+        } catch (ContradictionException ce) {
+            rollBackTransaction();
+            throw ce;
+        }
+        commitTransaction();
     }
 
     /* Processes the situation when replier shows known card. */
