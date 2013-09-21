@@ -1,6 +1,6 @@
 package com.cluedoassist;
 
-public class SetCard implements LogEntry {
+public final class SetCard implements LogEntry {
 
     public final String player;
 

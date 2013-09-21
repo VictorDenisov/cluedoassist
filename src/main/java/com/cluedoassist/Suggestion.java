@@ -2,7 +2,7 @@ package com.cluedoassist;
 
 import java.util.*;
 
-public class Suggestion implements LogEntry {
+public final class Suggestion implements LogEntry {
 
     public final String asker;
 

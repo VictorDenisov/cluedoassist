@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public abstract class CardReply implements Serializable {
 
+    private CardReply() {
+        // disable direct instantiation
+    }
+
     public static CardReply NoCard() {
         return noCard;
     }
@@ -28,10 +32,6 @@ public abstract class CardReply implements Serializable {
 
     public abstract int ordinal();
 
-    private CardReply() {
-        // disable direct instantiation
-    }
-
     public static final int NOCARD_INT = -2;
 
     public static final int UNKNOWN_INT = -1;
@@ -44,7 +44,7 @@ public abstract class CardReply implements Serializable {
 
     private static final UnknownCard unknownCard = new UnknownCard();
 
-    static class NoCard extends CardReply {
+    static final class NoCard extends CardReply {
         public int ordinal() {
             return NOCARD_INT;
         }
@@ -55,7 +55,7 @@ public abstract class CardReply implements Serializable {
         }
     }
 
-    static class UnknownCard extends CardReply {
+    static final class UnknownCard extends CardReply {
         public int ordinal() {
             return UNKNOWN_INT;
         }
@@ -66,8 +66,8 @@ public abstract class CardReply implements Serializable {
         }
     }
 
-    static class ActualCard extends CardReply {
-        Card card;
+    static final class ActualCard extends CardReply {
+        final Card card;
 
         ActualCard(Card c) {
             this.card = c;
