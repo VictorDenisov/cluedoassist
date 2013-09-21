@@ -419,11 +419,29 @@ public class Cluedo implements Serializable {
             tableModified = tableModified || processLogValue;
 
             boolean rectifyTableValue = rectifyTable();
+            verifyEveryLineHasQuestionOrPlus();
             tableModified = tableModified || rectifyTableValue;
             if (!tableModified) {
                 break;
             }
         }
+    }
+
+    private void verifyEveryLineHasQuestionOrPlus()
+                                        throws ContradictionException {
+        for (int i = 0; i < table.length; ++i) {
+            verifyLineHasQuestionOrPlus(i);
+        }
+    }
+
+    private void verifyLineHasQuestionOrPlus(int lineNum)
+                                        throws ContradictionException {
+        for (int i = 0; i < table[lineNum].length; ++i) {
+            if (table[lineNum][i] != Resolution.Minus) {
+                return;
+            }
+        }
+        throw new ContradictionException("Line has minuses only");
     }
 
     public int playerOrd(String player) throws UnknownPlayerException {
