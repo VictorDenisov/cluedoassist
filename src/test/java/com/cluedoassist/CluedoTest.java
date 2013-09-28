@@ -34,6 +34,8 @@ public class CluedoTest {
     @Test
     public void testTurn() throws Exception {
         askedCards.add(Card.Scarlett);
+        askedCards.add(Card.Knife);
+        askedCards.add(Card.Kitchen);
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(Cluedo.ME, askedCards, replies);
         String[][] table = cluedo.getTable();
@@ -43,6 +45,8 @@ public class CluedoTest {
     @Test
     public void testTurnLogEntry() throws Exception {
         askedCards.add(Card.Scarlett);
+        askedCards.add(Card.Knife);
+        askedCards.add(Card.Kitchen);
         replies.add(new Reply(P1, CardReply.NoCard()));
         cluedo.makeTurn(new Suggestion(Cluedo.ME, askedCards, replies));
         String[][] table = cluedo.getTable();
