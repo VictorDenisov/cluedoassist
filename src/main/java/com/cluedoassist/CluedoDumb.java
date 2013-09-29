@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import java.util.Collections;
 
-public class CluedoDumb implements Serializable, Cluedo {
+public class CluedoDumb implements Cluedo {
 
     protected int playerCount;
 

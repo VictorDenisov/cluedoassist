@@ -3,7 +3,9 @@ package com.cluedoassist;
 import java.util.Map;
 import java.util.List;
 
-public interface Cluedo {
+import java.io.Serializable;
+
+public interface Cluedo extends Serializable {
 
     static String ENVELOPE = "Env";
     static String OUT = "Out";
