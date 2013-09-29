@@ -6,49 +6,14 @@ import java.io.Serializable;
 
 import java.util.Collections;
 
-public class CluedoImpl implements Serializable, Cluedo {
-    private ArrayList<String> players;
-    private int playerCount;
-
-    private static int ENV_COL = 0;
-    private static int OUT_COL = 1;
-    private static int ME_COL = 2;
-
-    private int currentPlayer;
-
-    private Resolution[][] table;
-
-    private int[] cardCountPerPlayer;
-
-    public int cardCount = Card.values().length;
-
-    ArrayList<LogEntry> log;
+public class CluedoSmart extends CluedoDumb {
 
     private Resolution[][] backupTable;
 
     private ArrayList<LogEntry> backupLog;
 
-    public CluedoImpl(List<String> players) {
-        this.playerCount = players.size() + 1;
-        this.players = new ArrayList<String>();
-        this.players.add(ME);
-        this.players.addAll(players);
-        this.currentPlayer = 0;
-        log = new ArrayList<LogEntry>();
-
-        calculateCardCount();
-
-        newTable();
-    }
-
-    private void newTable() {
-        table = new Resolution[cardCount][];
-        for (int i = 0; i < cardCount; ++i) {
-            table[i] = new Resolution[playerCount + 2];
-            for (int j = 0; j < table[i].length; ++j) {
-                table[i][j] = Resolution.Unknown;
-            }
-        }
+    public CluedoSmart(List<String> players) {
+        super(players);
 
         try {
             solvePlayerHasAllCards(OUT_COL);
@@ -57,62 +22,11 @@ public class CluedoImpl implements Serializable, Cluedo {
         }
     }
 
-    public List<LogEntry> getLog() {
-        return Collections.unmodifiableList(log);
-    }
-
-    public List<String> getCompartments() {
-        ArrayList<String> result = new ArrayList<String>();
-        result.add(ENVELOPE);
-        result.add(OUT);
-        result.addAll(getPlayers());
-        return result;
-    }
-
-    public List<String> getPlayers() {
-        return Collections.unmodifiableList(players);
-    }
-
-    public String[][] getTable() {
-        String[][] result = new String[table.length + 1][];
-        for (int i = 0; i < result.length; ++i) {
-            result[i] = new String[playerCount + 3];
-        }
-        // write titles
-        result[0][ENV_COL + 1] = "Env";
-        result[0][OUT_COL + 1] = "Out";
-        for (int j = 0; j < playerCount; ++j) {
-            result[0][j + OUT_COL + 2] = players.get(j);
-        }
-        for (int i = 0; i < table.length; ++i) {
-            result[i + 1][0] = Card.values()[i].toString();
-            for (int j = 0; j < table[i].length; ++j) {
-                switch (table[i][j]) {
-                case Plus : result[i + 1][j + 1] = "+"; break;
-                case Minus : result[i + 1][j + 1] = "-"; break;
-                case Unknown : result[i + 1][j + 1] = "?"; break;
-                }
-            }
-        }
-        return result;
-    }
-
-    public Map<String, List<Card>> cardsShowedByMe() {
-        HashMap<String, List<Card>> result = new HashMap<String, List<Card>>();
-        for (int i = 0; i < playerCount; ++i) {
-            if (!players.get(i).equals(ME)) {
-                result.put(players.get(i), cardsShowedTo(players.get(i)));
-            }
-        }
-        return result;
-    }
-
     public void setCard(String asker, Card card) throws UnknownPlayerException
                                                       , ContradictionException {
-        //log.add(new SetCard(asker, card));
         beginTransaction();
         try {
-            log.add(new SetCard(asker, card));
+            super.setCard(asker, card);
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
@@ -124,18 +38,11 @@ public class CluedoImpl implements Serializable, Cluedo {
         commitTransaction();
     }
 
-    public void makeTurn( String asker
-                        , List<Card> askedCards
-                        , List<Reply> replies) throws UnknownPlayerException
-                                                    , ContradictionException {
-        makeTurn(new Suggestion(asker, askedCards, replies));
-    }
-
     public void makeTurn(Suggestion l) throws UnknownPlayerException
                                           , ContradictionException {
         beginTransaction();
-        log.add(l);
         try {
+            super.makeTurn(l);
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
@@ -152,7 +59,7 @@ public class CluedoImpl implements Serializable, Cluedo {
         beginTransaction();
 
         try {
-            log.add(a);
+            super.makeAccusation(a);
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
@@ -180,7 +87,7 @@ public class CluedoImpl implements Serializable, Cluedo {
                 result.add(CardReply.ActualCard(c));
             }
         }
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     private boolean hasNoneOf(int playerNumber, Card[] cards) {
@@ -228,37 +135,6 @@ public class CluedoImpl implements Serializable, Cluedo {
         backupTable = null;
         log = new ArrayList<LogEntry>(backupLog);
         backupLog = null;
-    }
-
-    private void calculateCardCount() {
-        int cardCountPerOnePlayer = (cardCount - 3) / playerCount;
-        int outCount = (cardCount - 3) % playerCount;
-
-        cardCountPerPlayer = new int[playerCount + 2];
-        cardCountPerPlayer[ENV_COL] = 3;
-        cardCountPerPlayer[OUT_COL] = outCount;
-        for (int i = 2; i < cardCountPerPlayer.length; ++i) {
-            cardCountPerPlayer[i] = cardCountPerOnePlayer;
-        }
-    }
-
-    private List<Card> cardsShowedTo(String player) {
-        ArrayList<Card> result = new ArrayList<Card>();
-        for (LogEntry e : log) {
-            if (e instanceof Suggestion) {
-                Suggestion s = (Suggestion) e;
-                if (s.asker.equals(player)) {
-                    for (Reply r : s.replies) {
-                        if (r.replier.equals(ME)) {
-                            if (r.cardReply instanceof CardReply.ActualCard) {
-                                result.add(((CardReply.ActualCard)r.cardReply).card);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     private boolean setPlus(int cardNumber, int playerNumber)
@@ -439,28 +315,11 @@ public class CluedoImpl implements Serializable, Cluedo {
         throw new ContradictionException("Line has minuses only");
     }
 
-    public int playerOrd(String player) throws UnknownPlayerException {
-        if (ENVELOPE.equals(player)) {
-            return ENV_COL;
-        } else if (OUT.equals(player)) {
-            return OUT_COL;
-        } else {
-            for (int i = 0; i < playerCount; ++i) {
-                if (player.equals(players.get(i))) {
-                    return i + 2;
-                }
-            }
-            throw new UnknownPlayerException("Unknown player : " + player);
-        }
-    }
-
     public void replaceLog(List<LogEntry> l) throws UnknownPlayerException
                                                   , ContradictionException {
         beginTransaction();
-        newTable();
-        log.clear();
-        log.addAll(l);
         try {
+            super.replaceLog(l);
             inferenceCycle();
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();

@@ -26,7 +26,7 @@ public class CluedoTest {
         players.add(P1);
         players.add(P2);
         players.add(P3);
-        cluedo = new CluedoImpl(players);
+        cluedo = new CluedoSmart(players);
         askedCards = new ArrayList<Card>();
         replies = new ArrayList<Reply>();
     }
