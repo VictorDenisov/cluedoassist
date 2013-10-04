@@ -185,8 +185,8 @@ public class CluedoSmart extends CluedoDumb {
         boolean tableModified = false;
         for (LogEntry logEntry : log) {
             if (logEntry instanceof Accusation) {
-                boolean doAccusation = doAccusation((Accusation)logEntry);
-                boolean solveAccusationValue = solveAccusation((Accusation)logEntry);
+                boolean doAccusation = solveAskerHasNoCardsFromAccusation((Accusation)logEntry);
+                boolean solveAccusationValue = solveUnsuccessfulAccusation((Accusation)logEntry);
                 tableModified = tableModified || solveAccusationValue;
                 tableModified = tableModified || doAccusation;
             } else if (logEntry instanceof SetCard) {
@@ -210,7 +210,8 @@ public class CluedoSmart extends CluedoDumb {
         return tableModified;
     }
 
-    private boolean doAccusation(Accusation a) throws UnknownPlayerException
+    private boolean solveAskerHasNoCardsFromAccusation(Accusation a)
+                                               throws UnknownPlayerException
                                                     , ContradictionException {
         int playerNumber = playerOrd(a.asker);
         boolean tableModified = false;
@@ -222,8 +223,8 @@ public class CluedoSmart extends CluedoDumb {
         return tableModified;
     }
 
-    private boolean solveAccusation(Accusation a)
-                                    throws ContradictionException {
+    private boolean solveUnsuccessfulAccusation(Accusation a)
+                                            throws ContradictionException {
         int plusCount = 0;
         for (Card c : a.cards) {
             int cardNumber = c.ordinal();
