@@ -210,40 +210,6 @@ public class CluedoSmart extends CluedoDumb {
         return tableModified;
     }
 
-    private boolean solveAskerHasNoCardsFromAccusation(Accusation a)
-                                               throws UnknownPlayerException
-                                                    , ContradictionException {
-        int playerNumber = playerOrd(a.asker);
-        boolean tableModified = false;
-        for (Card c : a.cards) {
-            int cardNumber = c.ordinal();
-            boolean result = setMinus(cardNumber, playerNumber);
-            tableModified = tableModified || result;
-        }
-        return tableModified;
-    }
-
-    private boolean solveUnsuccessfulAccusation(Accusation a)
-                                            throws ContradictionException {
-        int plusCount = 0;
-        for (Card c : a.cards) {
-            int cardNumber = c.ordinal();
-            if (table[cardNumber][ENV_COL] == Resolution.Plus) {
-                ++plusCount;
-            }
-        }
-        if (plusCount == 2) {
-            for (Card c : a.cards) {
-                int cardNumber = c.ordinal();
-                if (table[cardNumber][ENV_COL] == Resolution.Unknown) {
-                    setMinus(cardNumber, ENV_COL);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private boolean rectifyTable() throws ContradictionException {
         boolean tableModified = false;
         for (int i = 0; i < table[0].length; ++i) {
@@ -280,6 +246,40 @@ public class CluedoSmart extends CluedoDumb {
         boolean solvePlusInGroup12LengthValue = solvePlusInGroup(12, table.length);
         tableModified = tableModified || solvePlusInGroup12LengthValue;
         return tableModified;
+    }
+
+    private boolean solveAskerHasNoCardsFromAccusation(Accusation a)
+                                               throws UnknownPlayerException
+                                                    , ContradictionException {
+        int playerNumber = playerOrd(a.asker);
+        boolean tableModified = false;
+        for (Card c : a.cards) {
+            int cardNumber = c.ordinal();
+            boolean result = setMinus(cardNumber, playerNumber);
+            tableModified = tableModified || result;
+        }
+        return tableModified;
+    }
+
+    private boolean solveUnsuccessfulAccusation(Accusation a)
+                                            throws ContradictionException {
+        int plusCount = 0;
+        for (Card c : a.cards) {
+            int cardNumber = c.ordinal();
+            if (table[cardNumber][ENV_COL] == Resolution.Plus) {
+                ++plusCount;
+            }
+        }
+        if (plusCount == 2) {
+            for (Card c : a.cards) {
+                int cardNumber = c.ordinal();
+                if (table[cardNumber][ENV_COL] == Resolution.Unknown) {
+                    setMinus(cardNumber, ENV_COL);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void inferenceCycle() throws UnknownPlayerException
