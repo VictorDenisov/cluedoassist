@@ -263,14 +263,7 @@ public class CluedoSmart extends CluedoDumb {
 
     private boolean solveUnsuccessfulAccusation(Accusation a)
                                             throws ContradictionException {
-        int plusCount = 0;
-        for (Card c : a.cards) {
-            int cardNumber = c.ordinal();
-            if (table[cardNumber][ENV_COL] == Resolution.Plus) {
-                ++plusCount;
-            }
-        }
-        if (plusCount == 2) {
+        if (plusCountOfPlayer(ENV_COL) == 2) {
             for (Card c : a.cards) {
                 int cardNumber = c.ordinal();
                 if (table[cardNumber][ENV_COL] == Resolution.Unknown) {

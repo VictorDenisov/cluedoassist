@@ -43,6 +43,19 @@ public class CluedoTest {
     }
 
     @Test
+    public void testUnsuccessfulAccusation() throws Exception {
+        cluedo.setCard(Cluedo.ENVELOPE, Card.Plum);
+        cluedo.setCard(Cluedo.ENVELOPE, Card.Wrench);
+
+        askedCards.add(Card.Plum);
+        askedCards.add(Card.Wrench);
+        askedCards.add(Card.Kitchen);
+        cluedo.makeAccusation(new Accusation(Cluedo.ME, askedCards));
+        String[][] table = cluedo.getTable();
+        assertEquals("-", table[Card.Kitchen.ordinal() + 1][1]);
+    }
+
+    @Test
     public void testTurnLogEntry() throws Exception {
         askedCards.add(Card.Scarlett);
         askedCards.add(Card.Knife);
