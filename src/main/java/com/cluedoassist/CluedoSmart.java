@@ -358,7 +358,7 @@ public class CluedoSmart extends CluedoDumb {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.ordinal() == -2) {
+            if (r.cardReply.ordinal() == CardReply.NOCARD_INT) {
                 for (Card c : le.askedCards) {
                     int cardNumber = c.ordinal();
                     boolean setMinusValue = setMinus(cardNumber, playerNumber);
@@ -376,7 +376,7 @@ public class CluedoSmart extends CluedoDumb {
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.ordinal() == -1) {
+            if (r.cardReply.ordinal() == CardReply.UNKNOWN_INT) {
                 List<Card> s = allPlusCards(playerNumber);
                 s.addAll(allUnknownCards(playerNumber));
                 s.retainAll(le.askedCards);
@@ -472,7 +472,7 @@ public class CluedoSmart extends CluedoDumb {
         if (pluses == 1) {
             for (int i = l; i < r; ++i) {
                 if (table[i][0] != Resolution.Plus) {
-                    boolean setMinusValue = setMinus(i, 0);
+                    boolean setMinusValue = setMinus(i, ENV_COL);
                     tableModified = tableModified || setMinusValue;
                 }
             }
@@ -492,7 +492,7 @@ public class CluedoSmart extends CluedoDumb {
         if (minuses == (r - l - 1)) {
             for (int i = l; i < r; ++i) {
                 if (table[i][0] != Resolution.Minus) {
-                    boolean setPlusValue = setPlus(i, 0);
+                    boolean setPlusValue = setPlus(i, ENV_COL);
                     tableModified = tableModified || setPlusValue;
                 }
             }
