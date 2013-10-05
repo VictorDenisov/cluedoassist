@@ -40,9 +40,11 @@ public final class Suggestion implements LogEntry {
 
         this.asker = asker;
 
-        this.askedCards = new ArrayList<Card>(askedCards);
+        this.askedCards = Collections.unmodifiableList(
+                                            new ArrayList<Card>(askedCards));
 
-        this.replies = new ArrayList<Reply>(replies);
+        this.replies = Collections.unmodifiableList(
+                                            new ArrayList<Reply>(replies));
     }
 
     @Override
