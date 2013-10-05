@@ -21,6 +21,8 @@ public interface Cluedo extends Serializable {
 
     Map<String, List<Card>> cardsShowedByMe();
 
+    List<Card> cardsSuggestedBy(String player);
+
     void setCard(String asker, Card card) throws UnknownPlayerException
                                                       , ContradictionException;
 

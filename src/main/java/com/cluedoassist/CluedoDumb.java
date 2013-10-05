@@ -95,6 +95,33 @@ public class CluedoDumb implements Cluedo {
                 }
             }
         }
+        try {
+            for (String player : players) {
+                List<Card> suggestedCards = cardsSuggestedBy(player);
+                int playerNumber = playerOrd(player);
+                for (Card c : suggestedCards) {
+                    int cardNumber = c.ordinal();
+                    result[cardNumber + 1][playerNumber + 1] += "*";
+                }
+            }
+        } catch (UnknownPlayerException e) {
+            // Unknown player is impossible in this case.
+            // All players are from players list.
+        }
+
+        return result;
+    }
+
+    public List<Card> cardsSuggestedBy(String player) {
+        ArrayList<Card> result = new ArrayList<Card>();
+        for (LogEntry e : log) {
+            if (e instanceof Suggestion) {
+                Suggestion s = (Suggestion) e;
+                if (s.asker.equals(player)) {
+                    result.addAll(s.askedCards);
+                }
+            }
+        }
         return result;
     }
 
