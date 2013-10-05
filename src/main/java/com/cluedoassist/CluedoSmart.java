@@ -413,16 +413,30 @@ public class CluedoSmart extends CluedoDumb {
         return count;
     }
 
-    private boolean solveLineOneNonNegative(int cardNumber)
-                                                throws ContradictionException {
+    private int nonNegativeCountOfCard(int cardNumber) {
         int nonNegativeCount = 0;
         for (int i = 0; i < table[cardNumber].length; ++i) {
             if (table[cardNumber][i] != Resolution.Minus) {
                 ++nonNegativeCount;
             }
         }
+        return nonNegativeCount;
+    }
+
+    private int nonNegativeCountOfPlayer(int playerNumber) {
+        int nonNegativeCount = 0;
+        for (int i = 0; i < table.length; ++i) {
+            if (table[i][playerNumber] != Resolution.Minus) {
+                ++nonNegativeCount;
+            }
+        }
+        return nonNegativeCount;
+    }
+
+    private boolean solveLineOneNonNegative(int cardNumber)
+                                                throws ContradictionException {
         boolean tableModified = false;
-        if (nonNegativeCount == 1) {
+        if (nonNegativeCountOfCard(cardNumber) == 1) {
             for (int i = 0; i < table[cardNumber].length; ++i) {
                 if (table[cardNumber][i] == Resolution.Unknown) {
                     boolean setPlusValue = setPlus(cardNumber, i);
@@ -436,13 +450,8 @@ public class CluedoSmart extends CluedoDumb {
     private boolean solveCountOfNonnegativeEqualsCardCount(int playerNumber)
                                                 throws ContradictionException {
         boolean tableModified = false;
-        int nonNegativeCount = 0;
-        for (int i = 0; i < table.length; ++i) {
-            if (table[i][playerNumber] != Resolution.Minus) {
-                ++nonNegativeCount;
-            }
-        }
-        if (nonNegativeCount == cardCountPerPlayer[playerNumber]) {
+        if (nonNegativeCountOfPlayer(playerNumber)
+                                    == cardCountPerPlayer[playerNumber]) {
             for (int i = 0; i < table.length; ++i) {
                 if (table[i][playerNumber] == Resolution.Unknown) {
                     setPlus(i, playerNumber);
@@ -458,13 +467,13 @@ public class CluedoSmart extends CluedoDumb {
         boolean tableModified = false;
         int pluses = 0;
         for (int i = l; i < r; ++i) {
-            if (table[i][0] == Resolution.Plus) {
+            if (table[i][ENV_COL] == Resolution.Plus) {
                 ++pluses;
             }
         }
         if (pluses == 1) {
             for (int i = l; i < r; ++i) {
-                if (table[i][0] != Resolution.Plus) {
+                if (table[i][ENV_COL] != Resolution.Plus) {
                     boolean setMinusValue = setMinus(i, ENV_COL);
                     tableModified = tableModified || setMinusValue;
                 }
@@ -478,13 +487,13 @@ public class CluedoSmart extends CluedoDumb {
         boolean tableModified = false;
         int minuses = 0;
         for (int i = l; i < r; ++i) {
-            if (table[i][0] == Resolution.Minus) {
+            if (table[i][ENV_COL] == Resolution.Minus) {
                 ++minuses;
             }
         }
         if (minuses == (r - l - 1)) {
             for (int i = l; i < r; ++i) {
-                if (table[i][0] != Resolution.Minus) {
+                if (table[i][ENV_COL] != Resolution.Minus) {
                     boolean setPlusValue = setPlus(i, ENV_COL);
                     tableModified = tableModified || setPlusValue;
                 }
