@@ -101,7 +101,7 @@ public class CluedoDumb implements Cluedo {
                 int playerNumber = playerOrd(player);
                 for (Card c : suggestedCards) {
                     int cardNumber = c.ordinal();
-                    result[cardNumber + 1][playerNumber + 1] += "*";
+                    result[cardNumber + 1][playerNumber + 1] += ",";
                 }
             }
         } catch (UnknownPlayerException e) {
