@@ -60,4 +60,13 @@ public class CardSet {
         this.weaponCount = weaponCount;
         this.roomCount = roomCount;
     }
+
+    public int ordinal(String card) throws UnknownCardException {
+        for (int i = 0; i < cards.size(); ++i) {
+            if (cards.get(i).equals(card)) {
+                return i;
+            }
+        }
+        throw new UnknownCardException("Card " + card + " is unknown");
+    }
 }
