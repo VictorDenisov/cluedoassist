@@ -2,22 +2,30 @@ package com.cluedoassist;
 
 import java.io.Serializable;
 
-public abstract class CardReply implements Serializable {
+public class CardReply implements Serializable {
 
     private CardReply() {
         // disable direct instantiation
     }
 
+    private String value;
+
     public static CardReply NoCard() {
-        return noCard;
+        CardReply r = new CardReply();
+        r.value = NOCARD_S;
+        return r;
     }
 
     public static CardReply UnknownCard() {
-        return unknownCard;
+        CardReply r = new CardReply();
+        r.value = UNKNOWN_S;
+        return r;
     }
 
     public static CardReply ActualCard(Card c) {
-        return new ActualCard(c);
+        CardReply r = new CardReply();
+        r.value = c.toString();
+        return r;
     }
 
     public static CardReply valueOf(String s) {
@@ -30,7 +38,38 @@ public abstract class CardReply implements Serializable {
         }
     }
 
-    public abstract int ordinal();
+    public int ordinal() {
+        if (NOCARD_S.equals(value)) {
+            return NOCARD_INT;
+        } else if (UNKNOWN_S.equals(value)) {
+            return UNKNOWN_INT;
+        } else {
+            return Card.valueOf(value).ordinal();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
+    public boolean isActualCard() {
+        if (NOCARD_S.equals(value)) {
+            return false;
+        } else if (UNKNOWN_S.equals(value)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Card getCard() {
+        if (isActualCard()) {
+            return Card.valueOf(value);
+        } else {
+            return null;
+        }
+    }
 
     public static final int NOCARD_INT = -2;
 
@@ -39,48 +78,5 @@ public abstract class CardReply implements Serializable {
     public static final String NOCARD_S = "NoCard";
 
     public static final String UNKNOWN_S = "Unknown";
-
-    private static final NoCard noCard = new NoCard();
-
-    private static final UnknownCard unknownCard = new UnknownCard();
-
-    static final class NoCard extends CardReply {
-        public int ordinal() {
-            return NOCARD_INT;
-        }
-
-        @Override
-        public String toString() {
-            return NOCARD_S;
-        }
-    }
-
-    static final class UnknownCard extends CardReply {
-        public int ordinal() {
-            return UNKNOWN_INT;
-        }
-
-        @Override
-        public String toString() {
-            return UNKNOWN_S;
-        }
-    }
-
-    static final class ActualCard extends CardReply {
-        final Card card;
-
-        ActualCard(Card c) {
-            this.card = c;
-        }
-
-        public int ordinal() {
-            return card.ordinal();
-        }
-
-        @Override
-        public String toString() {
-            return card.toString();
-        }
-    }
 
 }

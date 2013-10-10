@@ -199,8 +199,8 @@ public class CluedoDumb implements Cluedo {
                 if (s.asker.equals(player)) {
                     for (Reply r : s.replies) {
                         if (r.replier.equals(ME)) {
-                            if (r.cardReply instanceof CardReply.ActualCard) {
-                                result.add(((CardReply.ActualCard)r.cardReply).card);
+                            if (r.cardReply.isActualCard()) {
+                                result.add(r.cardReply.getCard());
                             }
                         }
                     }
