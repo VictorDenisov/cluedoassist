@@ -38,13 +38,13 @@ public class CardReply implements Serializable {
         }
     }
 
-    public int ordinal() {
+    public int ordinal(CardSet cs) throws UnknownCardException {
         if (NOCARD_S.equals(value)) {
             return NOCARD_INT;
         } else if (UNKNOWN_S.equals(value)) {
             return UNKNOWN_INT;
         } else {
-            return Card.valueOf(value).ordinal();
+            return cs.ordinal(Card.valueOf(value));
         }
     }
 
@@ -61,6 +61,20 @@ public class CardReply implements Serializable {
         } else {
             return true;
         }
+    }
+
+    public boolean isNoCard() {
+        if (NOCARD_S.equals(value)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isUnknown() {
+        if (UNKNOWN_S.equals(value)) {
+            return true;
+        }
+        return false;
     }
 
     public Card getCard() {

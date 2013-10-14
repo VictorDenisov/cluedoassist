@@ -40,7 +40,7 @@ public final class Reply implements Serializable {
     public static int cardCountInReplies(List<Reply> replies) {
         int result = 0;
         for (Reply r : replies) {
-            if (r.cardReply.ordinal() != CardReply.NOCARD_INT) {
+            if (!r.cardReply.isNoCard()) {
                 ++result;
             }
         }

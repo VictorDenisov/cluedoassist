@@ -24,10 +24,16 @@ public class CardSet {
         }
 
         public CardSet create() {
-            ArrayList<String> cards = new ArrayList<String>();
-            cards.addAll(suspects);
-            cards.addAll(weapons);
-            cards.addAll(rooms);
+            ArrayList<Card> cards = new ArrayList<Card>();
+            for (String s : suspects) {
+                cards.add(Card.valueOf(s));
+            }
+            for (String s : weapons) {
+                cards.add(Card.valueOf(s));
+            }
+            for (String s : rooms) {
+                cards.add(Card.valueOf(s));
+            }
 
             return new CardSet( cards
                               , suspects.size()
@@ -43,7 +49,7 @@ public class CardSet {
         return b;
     }
 
-    public final List<String> cards;
+    public final List<Card> cards;
 
     public final int suspectCount;
 
@@ -51,7 +57,9 @@ public class CardSet {
 
     public final int roomCount;
 
-    private CardSet( ArrayList<String> cards
+    public final int cardCount;
+
+    private CardSet( ArrayList<Card> cards
                    , int suspectCount
                    , int weaponCount
                    , int roomCount) {
@@ -59,9 +67,10 @@ public class CardSet {
         this.suspectCount = suspectCount;
         this.weaponCount = weaponCount;
         this.roomCount = roomCount;
+        this.cardCount = cards.size();
     }
 
-    public int ordinal(String card) throws UnknownCardException {
+    public int ordinal(Card card) throws UnknownCardException {
         for (int i = 0; i < cards.size(); ++i) {
             if (cards.get(i).equals(card)) {
                 return i;

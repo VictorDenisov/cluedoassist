@@ -17,33 +17,39 @@ public interface Cluedo extends Serializable {
 
     List<String> getPlayers();
 
-    String[][] getTable();
+    String[][] getTable() throws UnknownCardException ;
 
     Map<String, List<Card>> cardsShowedByMe();
 
     List<Card> cardsSuggestedBy(String player);
 
     void setCard(String asker, Card card) throws UnknownPlayerException
-                                                      , ContradictionException;
+                                               , UnknownCardException
+                                               , ContradictionException;
 
     void makeTurn( String asker
                  , List<Card> askedCards
                  , List<Reply> replies) throws UnknownPlayerException
+                                             , UnknownCardException
                                              , ContradictionException;
 
     void makeTurn(Suggestion l) throws UnknownPlayerException
+                                     , UnknownCardException
                                      , ContradictionException;
 
     void makeAccusation(Accusation a) throws UnknownPlayerException
+                                           , UnknownCardException
                                            , ContradictionException;
 
     List<CardReply> possibleCardReplies( String replier
                                        , Card[] askedCards
-                                       ) throws UnknownPlayerException;
+                                       ) throws UnknownPlayerException
+                                              , UnknownCardException;
 
     int playerOrd(String player) throws UnknownPlayerException;
 
     public void replaceLog(List<LogEntry> l) throws UnknownPlayerException
+                                                  , UnknownCardException
                                                   , ContradictionException;
 
 }

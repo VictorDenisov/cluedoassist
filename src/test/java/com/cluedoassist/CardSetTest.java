@@ -40,6 +40,6 @@ public class CardSetTest {
                             .rooms(rooms)
                             .create();
 
-        assertEquals(3, cs.ordinal("weapon1"));
+        assertEquals(3, cs.ordinal(Card.valueOf("weapon1")));
     }
 }

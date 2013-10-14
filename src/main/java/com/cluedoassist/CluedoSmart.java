@@ -12,8 +12,8 @@ public class CluedoSmart extends CluedoDumb {
 
     private ArrayList<LogEntry> backupLog;
 
-    public CluedoSmart(List<String> players) {
-        super(players);
+    public CluedoSmart(CardSet cs, List<String> players) {
+        super(cs, players);
 
         try {
             solvePlayerHasAllCards(OUT_COL);
@@ -23,6 +23,7 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     public void setCard(String asker, Card card) throws UnknownPlayerException
+                                                      , UnknownCardException
                                                       , ContradictionException {
         beginTransaction();
         try {
@@ -39,7 +40,8 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     public void makeTurn(Suggestion l) throws UnknownPlayerException
-                                          , ContradictionException {
+                                            , UnknownCardException
+                                            , ContradictionException {
         beginTransaction();
         try {
             super.makeTurn(l);
@@ -55,6 +57,7 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     public void makeAccusation(Accusation a) throws UnknownPlayerException
+                                                  , UnknownCardException
                                                   , ContradictionException {
         beginTransaction();
 
@@ -73,7 +76,8 @@ public class CluedoSmart extends CluedoDumb {
 
     public List<CardReply> possibleCardReplies( String replier
                                               , Card[] askedCards
-                                              ) throws UnknownPlayerException {
+                                              ) throws UnknownPlayerException
+                                                     , UnknownCardException {
         int playerNumber = playerOrd(replier);
         ArrayList<CardReply> result = new ArrayList<CardReply>();
         if (hasNoneOf(playerNumber, askedCards)) {
@@ -83,25 +87,27 @@ public class CluedoSmart extends CluedoDumb {
             result.add(CardReply.UnknownCard());
         }
         for (Card c : askedCards) {
-            if (table[c.ordinal()][playerNumber] != Resolution.Minus) {
+            if (table[cardSet.ordinal(c)][playerNumber] != Resolution.Minus) {
                 result.add(CardReply.ActualCard(c));
             }
         }
         return Collections.unmodifiableList(result);
     }
 
-    private boolean hasNoneOf(int playerNumber, Card[] cards) {
+    private boolean hasNoneOf(int playerNumber, Card[] cards)
+                                                  throws UnknownCardException {
         for (Card c : cards) {
-            if (table[c.ordinal()][playerNumber] == Resolution.Plus) {
+            if (table[cardSet.ordinal(c)][playerNumber] == Resolution.Plus) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean hasNonNegativeOf(int playerNumber, Card[] cards) {
+    private boolean hasNonNegativeOf(int playerNumber, Card[] cards)
+                                                throws UnknownCardException {
         for (Card c : cards) {
-            if (table[c.ordinal()][playerNumber] != Resolution.Minus) {
+            if (table[cardSet.ordinal(c)][playerNumber] != Resolution.Minus) {
                 return true;
             }
         }
@@ -140,7 +146,7 @@ public class CluedoSmart extends CluedoDumb {
     private boolean setPlus(int cardNumber, int playerNumber)
                                                 throws ContradictionException {
         if (table[cardNumber][playerNumber] == Resolution.Minus) {
-            Card card = Card.values()[cardNumber];
+            Card card = cardSet.cards.get(cardNumber);
             String player = getCompartments().get(playerNumber);
             throw new ContradictionException("Card : " + card
                                          + ", Player : " + player
@@ -164,7 +170,7 @@ public class CluedoSmart extends CluedoDumb {
     private boolean setMinus(int cardNumber, int playerNumber)
                                                 throws ContradictionException {
         if (table[cardNumber][playerNumber] == Resolution.Plus) {
-            Card card = Card.values()[cardNumber];
+            Card card = cardSet.cards.get(cardNumber);
             String player = getCompartments().get(playerNumber);
             throw new ContradictionException("Card : " + card
                                          + ", Player : " + player
@@ -181,6 +187,7 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     private boolean processLog() throws UnknownPlayerException
+                                      , UnknownCardException
                                       , ContradictionException {
         boolean tableModified = false;
         for (LogEntry logEntry : log) {
@@ -192,7 +199,7 @@ public class CluedoSmart extends CluedoDumb {
             } else if (logEntry instanceof SetCard) {
                 SetCard s = (SetCard) logEntry;
                 int playerNumber = playerOrd(s.player);
-                int cardNumber = s.card.ordinal();
+                int cardNumber = cardSet.ordinal(s.card);
                 setPlus(cardNumber, playerNumber);
             } else {
                 Suggestion suggestion = (Suggestion) logEntry;
@@ -250,11 +257,12 @@ public class CluedoSmart extends CluedoDumb {
 
     private boolean solveAskerHasNoCardsFromAccusation(Accusation a)
                                                throws UnknownPlayerException
+                                                    , UnknownCardException
                                                     , ContradictionException {
         int playerNumber = playerOrd(a.asker);
         boolean tableModified = false;
         for (Card c : a.cards) {
-            int cardNumber = c.ordinal();
+            int cardNumber = cardSet.ordinal(c);
             boolean result = setMinus(cardNumber, playerNumber);
             tableModified = tableModified || result;
         }
@@ -262,10 +270,11 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     private boolean solveUnsuccessfulAccusation(Accusation a)
-                                            throws ContradictionException {
+                                            throws UnknownCardException
+                                                 , ContradictionException {
         if (plusCountOfPlayer(ENV_COL) == 2) {
             for (Card c : a.cards) {
-                int cardNumber = c.ordinal();
+                int cardNumber = cardSet.ordinal(c);
                 if (table[cardNumber][ENV_COL] == Resolution.Unknown) {
                     setMinus(cardNumber, ENV_COL);
                     return true;
@@ -276,6 +285,7 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     private void inferenceCycle() throws UnknownPlayerException
+                                       , UnknownCardException
                                        , ContradictionException {
         for (;;) {
             boolean tableModified = false;
@@ -310,6 +320,7 @@ public class CluedoSmart extends CluedoDumb {
     }
 
     public void replaceLog(List<LogEntry> l) throws UnknownPlayerException
+                                                  , UnknownCardException
                                                   , ContradictionException {
         beginTransaction();
         try {
@@ -328,12 +339,13 @@ public class CluedoSmart extends CluedoDumb {
     /* Processes the situation when replier shows known card. */
     private boolean solveRepliersHave(Suggestion le)
                                                 throws UnknownPlayerException
+                                                     , UnknownCardException
                                                      , ContradictionException {
         boolean tableModified = false;
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            int cardNumber = r.cardReply.ordinal();
+            int cardNumber = r.cardReply.ordinal(cardSet);
             if (cardNumber < 0) {
                 continue;
             }
@@ -346,14 +358,15 @@ public class CluedoSmart extends CluedoDumb {
     /* Processes the situation when replier shows no cards. */
     private boolean solveReplierHasNoCards(Suggestion le)
                                                 throws UnknownPlayerException
+                                                     , UnknownCardException
                                                      , ContradictionException {
         boolean tableModified = false;
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.ordinal() == CardReply.NOCARD_INT) {
+            if (r.cardReply.isNoCard()) {
                 for (Card c : le.askedCards) {
-                    int cardNumber = c.ordinal();
+                    int cardNumber = cardSet.ordinal(c);
                     boolean setMinusValue = setMinus(cardNumber, playerNumber);
                     tableModified = tableModified || setMinusValue;
                 }
@@ -364,17 +377,18 @@ public class CluedoSmart extends CluedoDumb {
 
     private boolean solveOnlyOneUnknown(Suggestion le)
                                                 throws UnknownPlayerException
+                                                     , UnknownCardException
                                                      , ContradictionException {
         boolean tableModified = false;
         for (Reply r : le.replies) {
             int playerNumber = playerOrd(r.replier);
 
-            if (r.cardReply.ordinal() == CardReply.UNKNOWN_INT) {
+            if (r.cardReply.isUnknown()) {
                 List<Card> s = allPlusCards(playerNumber);
                 s.addAll(allUnknownCards(playerNumber));
                 s.retainAll(le.askedCards);
                 if (s.size() == 1) {
-                    int cardNumber = s.get(0).ordinal();
+                    int cardNumber = cardSet.ordinal(s.get(0));
                     boolean setPlusValue = setPlus(cardNumber, playerNumber);
                     tableModified = tableModified || setPlusValue;
                 }
@@ -385,17 +399,18 @@ public class CluedoSmart extends CluedoDumb {
 
     private boolean solveThreeCardsReplied(Suggestion le)
                                                 throws UnknownPlayerException
+                                                     , UnknownCardException
                                                      , ContradictionException {
         boolean tableModified = false;
         int countCardReplies = 0;
         for (Reply r : le.replies) {
-            if (r.cardReply.ordinal() != CardReply.NOCARD_INT) {
+            if (!r.cardReply.isNoCard()) {
                 ++countCardReplies;
             }
         }
         if (countCardReplies == 3) {
             for (Card c : le.askedCards) {
-                int cardNumber = c.ordinal();
+                int cardNumber = cardSet.ordinal(c);
                 boolean value = setMinus(cardNumber, ENV_COL);
                 tableModified = tableModified || value;
             }
@@ -405,7 +420,7 @@ public class CluedoSmart extends CluedoDumb {
 
     private int plusCountOfPlayer(int playerNumber) {
         int count = 0;
-        for (int i = 0; i < cardCount; ++i) {
+        for (int i = 0; i < cardSet.cardCount; ++i) {
             if (table[i][playerNumber] == Resolution.Plus) {
                 ++count;
             }
@@ -508,7 +523,7 @@ public class CluedoSmart extends CluedoDumb {
         if (plusCountOfPlayer(playerNumber)
                     == cardCountPerPlayer[playerNumber]) {
 
-            for (int i = 0; i < cardCount; ++i) {
+            for (int i = 0; i < cardSet.cardCount; ++i) {
                 if (table[i][playerNumber] == Resolution.Unknown) {
                     tableModified = true;
                     setMinus(i, playerNumber);
@@ -520,9 +535,9 @@ public class CluedoSmart extends CluedoDumb {
 
     private List<Card> allPlusCards(int playerNumber) {
         ArrayList<Card> result = new ArrayList<Card>();
-        for (int i = 0; i < cardCount; ++i) {
+        for (int i = 0; i < cardSet.cardCount; ++i) {
             if (table[i][playerNumber] == Resolution.Plus) {
-                result.add(Card.values()[i]);
+                result.add(cardSet.cards.get(i));
             }
         }
         return result;
@@ -530,9 +545,9 @@ public class CluedoSmart extends CluedoDumb {
 
     private List<Card> allUnknownCards(int playerNumber) {
         ArrayList<Card> result = new ArrayList<Card>();
-        for (int i = 0; i < cardCount; ++i) {
+        for (int i = 0; i < cardSet.cardCount; ++i) {
             if (table[i][playerNumber] == Resolution.Unknown) {
-                result.add(Card.values()[i]);
+                result.add(cardSet.cards.get(i));
             }
         }
         return result;

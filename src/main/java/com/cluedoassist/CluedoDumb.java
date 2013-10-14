@@ -16,15 +16,16 @@ public class CluedoDumb implements Cluedo {
 
     protected ArrayList<String> players;
 
+    protected CardSet cardSet;
+
     protected ArrayList<LogEntry> log;
 
     protected Resolution[][] table;
 
     protected int[] cardCountPerPlayer;
 
-    public int cardCount = Card.values().length;
-
-    public CluedoDumb(List<String> players) {
+    public CluedoDumb(CardSet cs, List<String> players) {
+        this.cardSet = cs;
         this.playerCount = players.size() + 1;
         this.players = new ArrayList<String>();
         this.players.add(ME);
@@ -37,8 +38,8 @@ public class CluedoDumb implements Cluedo {
     }
 
     private void calculateCardCount() {
-        int cardCountPerOnePlayer = (cardCount - 3) / playerCount;
-        int outCount = (cardCount - 3) % playerCount;
+        int cardCountPerOnePlayer = (cardSet.cardCount - 3) / playerCount;
+        int outCount = (cardSet.cardCount - 3) % playerCount;
 
         cardCountPerPlayer = new int[playerCount + 2];
         cardCountPerPlayer[ENV_COL] = 3;
@@ -49,8 +50,8 @@ public class CluedoDumb implements Cluedo {
     }
 
     private void newTable() {
-        table = new Resolution[cardCount][];
-        for (int i = 0; i < cardCount; ++i) {
+        table = new Resolution[cardSet.cardCount][];
+        for (int i = 0; i < cardSet.cardCount; ++i) {
             table[i] = new Resolution[playerCount + 2];
             for (int j = 0; j < table[i].length; ++j) {
                 table[i][j] = Resolution.Unknown;
@@ -74,7 +75,7 @@ public class CluedoDumb implements Cluedo {
         return Collections.unmodifiableList(players);
     }
 
-    public String[][] getTable() {
+    public String[][] getTable() throws UnknownCardException {
         String[][] result = new String[table.length + 1][];
         for (int i = 0; i < result.length; ++i) {
             result[i] = new String[playerCount + 3];
@@ -86,7 +87,7 @@ public class CluedoDumb implements Cluedo {
             result[0][j + OUT_COL + 2] = players.get(j);
         }
         for (int i = 0; i < table.length; ++i) {
-            result[i + 1][0] = Card.values()[i].toString();
+            result[i + 1][0] = cardSet.cards.get(i).toString();
             for (int j = 0; j < table[i].length; ++j) {
                 switch (table[i][j]) {
                 case Plus : result[i + 1][j + 1] = "+"; break;
@@ -100,7 +101,7 @@ public class CluedoDumb implements Cluedo {
                 List<Card> suggestedCards = cardsSuggestedBy(player);
                 int playerNumber = playerOrd(player);
                 for (Card c : suggestedCards) {
-                    int cardNumber = c.ordinal();
+                    int cardNumber = cardSet.ordinal(c);
                     result[cardNumber + 1][playerNumber + 1] += ",";
                 }
             }
@@ -136,6 +137,7 @@ public class CluedoDumb implements Cluedo {
     }
 
     public void setCard(String asker, Card card) throws UnknownPlayerException
+                                                      , UnknownCardException
                                                       , ContradictionException {
         log.add(new SetCard(asker, card));
     }
@@ -143,23 +145,27 @@ public class CluedoDumb implements Cluedo {
     public void makeTurn( String asker
                         , List<Card> askedCards
                         , List<Reply> replies) throws UnknownPlayerException
+                                                    , UnknownCardException
                                                     , ContradictionException {
         makeTurn(new Suggestion(asker, askedCards, replies));
     }
 
     public void makeTurn(Suggestion l) throws UnknownPlayerException
-                                          , ContradictionException {
+                                            , UnknownCardException
+                                            , ContradictionException {
         log.add(l);
     }
 
     public void makeAccusation(Accusation a) throws UnknownPlayerException
+                                                  , UnknownCardException
                                                   , ContradictionException {
         log.add(a);
     }
 
     public List<CardReply> possibleCardReplies( String replier
                                               , Card[] askedCards
-                                              ) throws UnknownPlayerException {
+                                              ) throws UnknownPlayerException
+                                                     , UnknownCardException {
         ArrayList<CardReply> result = new ArrayList<CardReply>();
         result.add(CardReply.NoCard());
         result.add(CardReply.UnknownCard());
@@ -185,6 +191,7 @@ public class CluedoDumb implements Cluedo {
     }
 
     public void replaceLog(List<LogEntry> l) throws UnknownPlayerException
+                                                  , UnknownCardException
                                                   , ContradictionException {
         newTable();
         log.clear();
