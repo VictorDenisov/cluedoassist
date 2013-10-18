@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class CardReply implements Serializable {
 
+    static final long serialVersionUID = 1L;
+
     private CardReply() {
         // disable direct instantiation
     }

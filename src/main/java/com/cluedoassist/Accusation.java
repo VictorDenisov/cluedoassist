@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 public final class Accusation implements LogEntry {
 
+    static final long serialVersionUID = 1L;
+
     public final String asker;
 
     public final List<Card> cards;

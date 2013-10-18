@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public final class Reply implements Serializable {
 
+    static final long serialVersionUID = 1L;
+
     public final String replier;
 
     public final CardReply cardReply;

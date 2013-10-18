@@ -3,6 +3,9 @@ package com.cluedoassist;
 import java.io.Serializable;
 
 public final class Card implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     private Card() {
     }
 

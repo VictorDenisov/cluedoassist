@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 public class CardSet implements Serializable {
 
+    static final long serialVersionUID = 1L;
+
     public static class CardSetBuilder {
         private List<String> suspects;
 

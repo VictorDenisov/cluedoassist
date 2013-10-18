@@ -8,6 +8,8 @@ import java.util.Collections;
 
 public class CluedoSmart extends CluedoDumb {
 
+    static final long serialVersionUID = 1L;
+
     private Resolution[][] backupTable;
 
     private ArrayList<LogEntry> backupLog;

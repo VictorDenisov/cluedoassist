@@ -4,6 +4,8 @@ import java.util.*;
 
 public final class Suggestion implements LogEntry {
 
+    static final long serialVersionUID = 1L;
+
     public final String asker;
 
     public final List<Card> askedCards;

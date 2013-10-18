@@ -8,6 +8,8 @@ import java.util.Collections;
 
 public class CluedoDumb implements Cluedo {
 
+    static final long serialVersionUID = 1L;
+
     protected int playerCount;
 
     protected static int ENV_COL = 0;
