@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CardSet {
+import java.io.Serializable;
+
+public class CardSet implements Serializable {
 
     public static class CardSetBuilder {
         private List<String> suspects;

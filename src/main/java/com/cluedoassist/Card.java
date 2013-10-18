@@ -1,6 +1,8 @@
 package com.cluedoassist;
 
-public final class Card {
+import java.io.Serializable;
+
+public final class Card implements Serializable {
     private Card() {
     }
 
