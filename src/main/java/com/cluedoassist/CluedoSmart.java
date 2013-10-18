@@ -32,6 +32,9 @@ public class CluedoSmart extends CluedoDumb {
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
             throw upe;
+        } catch (UnknownCardException uce) {
+            rollBackTransaction();
+            throw uce;
         } catch (ContradictionException ce) {
             rollBackTransaction();
             throw ce;
@@ -49,6 +52,9 @@ public class CluedoSmart extends CluedoDumb {
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
             throw upe;
+        } catch (UnknownCardException uce) {
+            rollBackTransaction();
+            throw uce;
         } catch (ContradictionException ce) {
             rollBackTransaction();
             throw ce;
@@ -67,6 +73,9 @@ public class CluedoSmart extends CluedoDumb {
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
             throw upe;
+        } catch (UnknownCardException uce) {
+            rollBackTransaction();
+            throw uce;
         } catch (ContradictionException ce) {
             rollBackTransaction();
             throw ce;
@@ -329,6 +338,9 @@ public class CluedoSmart extends CluedoDumb {
         } catch (UnknownPlayerException upe) {
             rollBackTransaction();
             throw upe;
+        } catch (UnknownCardException uce) {
+            rollBackTransaction();
+            throw uce;
         } catch (ContradictionException ce) {
             rollBackTransaction();
             throw ce;
