@@ -75,7 +75,7 @@ public class CluedoDumb implements Cluedo {
         return Collections.unmodifiableList(players);
     }
 
-    public String[][] getTable() throws UnknownCardException {
+    public String[][] getTable() {
         String[][] result = new String[table.length + 1][];
         for (int i = 0; i < result.length; ++i) {
             result[i] = new String[playerCount + 3];
@@ -101,8 +101,14 @@ public class CluedoDumb implements Cluedo {
                 List<Card> suggestedCards = cardsSuggestedBy(player);
                 int playerNumber = playerOrd(player);
                 for (Card c : suggestedCards) {
-                    int cardNumber = cardSet.ordinal(c);
-                    result[cardNumber + 1][playerNumber + 1] += ",";
+                    try {
+                        int cardNumber = cardSet.ordinal(c);
+                        result[cardNumber + 1][playerNumber + 1] += ",";
+                    } catch (UnknownCardException e) {
+                        // Ignore exception.
+                        // if suggested card is unknown it just will not be
+                        // refelected in table.
+                    }
                 }
             }
         } catch (UnknownPlayerException e) {

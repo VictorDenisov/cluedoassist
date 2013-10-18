@@ -17,7 +17,7 @@ public interface Cluedo extends Serializable {
 
     List<String> getPlayers();
 
-    String[][] getTable() throws UnknownCardException ;
+    String[][] getTable();
 
     Map<String, List<Card>> cardsShowedByMe();
 
