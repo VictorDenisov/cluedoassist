@@ -75,6 +75,10 @@ public class CluedoDumb implements Cluedo {
         return Collections.unmodifiableList(players);
     }
 
+    public CardSet getCardSet() {
+        return cardSet;
+    }
+
     public String[][] getTable() {
         String[][] result = new String[table.length + 1][];
         for (int i = 0; i < result.length; ++i) {
