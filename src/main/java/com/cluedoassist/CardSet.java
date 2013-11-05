@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 
@@ -100,6 +102,28 @@ public class CardSet implements Serializable {
         for (int i = 0; i < cardCount; ++i) {
             writer.println(cards.get(i));
         }
+    }
+
+    public static CardSet read(BufferedReader reader) throws IOException {
+        int suspectCount = Integer.valueOf(reader.readLine());
+        int weaponCount = Integer.valueOf(reader.readLine());
+        int roomCount = Integer.valueOf(reader.readLine());
+        ArrayList<String> suspects = new ArrayList<String>();
+        ArrayList<String> weapons = new ArrayList<String>();
+        ArrayList<String> rooms = new ArrayList<String>();
+        for (int i = 0; i < suspectCount; ++i) {
+            suspects.add(reader.readLine().trim());
+        }
+        for (int i = 0; i < weaponCount; ++i) {
+            weapons.add(reader.readLine().trim());
+        }
+        for (int i = 0; i < roomCount; ++i) {
+            rooms.add(reader.readLine().trim());
+        }
+        return CardSet.suspects(suspects)
+                      .weapons(weapons)
+                      .rooms(rooms)
+                      .create();
     }
 
     public int ordinal(Card card) throws UnknownCardException {

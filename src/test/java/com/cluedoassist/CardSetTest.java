@@ -22,7 +22,9 @@ import org.testng.annotations.*;
 
 import static org.testng.AssertJUnit.*;
 
+import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import java.util.List;
@@ -90,5 +92,34 @@ public class CardSetTest {
         pw.close();
 
         assertEquals(PRINTED_RESULT, sw.toString());
+    }
+
+    @Test
+    public void testReader() throws Exception {
+        StringReader sr = new StringReader(PRINTED_RESULT);
+        BufferedReader br = new BufferedReader(sr);
+        CardSet cs = CardSet.read(br);
+
+        assertEquals(9, cs.cards.size());
+        assertEquals(3, cs.suspectCount);
+        assertEquals(2, cs.weaponCount);
+        assertEquals(4, cs.roomCount);
+        for (int i = 0; i < cs.suspectCount; ++i) {
+            String s1 = suspects.get(i);
+            String s2 = cs.cards.get(i).toString();
+            assertEquals(s1, s2);
+        }
+        for (int i = 0; i < cs.weaponCount; ++i) {
+            String s1 = weapons.get(i);
+            String s2 = cs.cards.get(i + cs.suspectCount).toString();
+            assertEquals(s1, s2);
+        }
+        for (int i = 0; i < cs.roomCount; ++i) {
+            String s1 = rooms.get(i);
+            String s2 = cs.cards
+                          .get(i + cs.suspectCount + cs.weaponCount)
+                          .toString();
+            assertEquals(s1, s2);
+        }
     }
 }
