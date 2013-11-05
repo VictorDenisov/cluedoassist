@@ -22,6 +22,9 @@ import org.testng.annotations.*;
 
 import static org.testng.AssertJUnit.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import java.util.List;
 import java.util.Arrays;
 
@@ -38,6 +41,19 @@ public class CardSetTest {
                                                    , "room3"
                                                    , "room4"
                                                    });
+    private static final String PRINTED_RESULT
+                    = "3\n"
+                    + "2\n"
+                    + "4\n"
+                    + "suspect1\n"
+                    + "suspect2\n"
+                    + "suspect3\n"
+                    + "weapon1\n"
+                    + "weapon2\n"
+                    + "room1\n"
+                    + "room2\n"
+                    + "room3\n"
+                    + "room4\n";
 
     @Test
     public void testBuilder() {
@@ -59,5 +75,20 @@ public class CardSetTest {
                             .create();
 
         assertEquals(3, cs.ordinal(Card.valueOf("weapon1")));
+    }
+
+    @Test
+    public void testWrite() throws Exception {
+        CardSet cs = CardSet.suspects(suspects)
+                            .weapons(weapons)
+                            .rooms(rooms)
+                            .create();
+
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        cs.write(pw);
+        pw.close();
+
+        assertEquals(PRINTED_RESULT, sw.toString());
     }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
 
 public class CardSet implements Serializable {
@@ -90,6 +91,15 @@ public class CardSet implements Serializable {
         this.weaponCount = weaponCount;
         this.roomCount = roomCount;
         this.cardCount = cards.size();
+    }
+
+    public void write(PrintWriter writer) {
+        writer.println(suspectCount);
+        writer.println(weaponCount);
+        writer.println(roomCount);
+        for (int i = 0; i < cardCount; ++i) {
+            writer.println(cards.get(i));
+        }
     }
 
     public int ordinal(Card card) throws UnknownCardException {
