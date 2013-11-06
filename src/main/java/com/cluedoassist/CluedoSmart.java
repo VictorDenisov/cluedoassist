@@ -262,24 +262,38 @@ public class CluedoSmart extends CluedoDumb {
             tableModified = tableModified || solveLineOneNonNegativeValue;
         }
         boolean solveEnvHasOneUnknownCardInGroup06Value =
-                                         solveEnvHasOneUnknownCardInGroup(0, 6);
+                                         solveEnvHasOneUnknownCardInGroup
+                                                        ( 0
+                                                        , cardSet.suspectCount);
         tableModified = tableModified || solveEnvHasOneUnknownCardInGroup06Value;
 
         boolean solveEnvHasOneUnknownCardInGroup612Value =
-                                        solveEnvHasOneUnknownCardInGroup(6, 12);
+                                        solveEnvHasOneUnknownCardInGroup
+                                                ( cardSet.suspectCount
+                                                , cardSet.suspectCount
+                                                + cardSet.weaponCount);
         tableModified = tableModified || solveEnvHasOneUnknownCardInGroup612Value;
 
         boolean solveEnvHasOneUnknownCardInGroup12LengthValue =
-                             solveEnvHasOneUnknownCardInGroup(12, table.length);
+                             solveEnvHasOneUnknownCardInGroup
+                                    ( cardSet.suspectCount
+                                    + cardSet.weaponCount
+                                    , table.length);
         tableModified = tableModified || solveEnvHasOneUnknownCardInGroup12LengthValue;
 
-        boolean solvePlusInGroup06Value = solvePlusInGroup(0, 6);
+        boolean solvePlusInGroup06Value = solvePlusInGroup( 0
+                                                          , cardSet.suspectCount);
         tableModified = tableModified || solvePlusInGroup06Value;
 
-        boolean solvePlusInGroup612Value = solvePlusInGroup(6, 12);
+        boolean solvePlusInGroup612Value = solvePlusInGroup( cardSet.suspectCount
+                                                           , cardSet.suspectCount
+                                                           + cardSet.weaponCount);
         tableModified = tableModified || solvePlusInGroup612Value;
 
-        boolean solvePlusInGroup12LengthValue = solvePlusInGroup(12, table.length);
+        boolean solvePlusInGroup12LengthValue = solvePlusInGroup
+                                                    ( cardSet.suspectCount
+                                                    + cardSet.weaponCount
+                                                    , table.length);
         tableModified = tableModified || solvePlusInGroup12LengthValue;
         return tableModified;
     }
